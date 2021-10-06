@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>JB LCMS</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JB LCMS</h1>
+            <nav aria-label="Main Menu">
+                <ul role="menubar" aria-label="Main Menu">
+                    <li><a href="#" class="nav-link" id="list-courses-link" role="menuitem" onclick="swapNavLinks(event)" onkeydown="swapNavLinks(event)">List Courses</a></li>
+                    <li><a href="#" class="nav-link" id="list-pages-link" role="menuitem" onclick="swapNavLinks(event)" onkeydown="swapNavLinks(event)">List Pages</a></li>
+                    <li><a href="#" class="nav-link" id="new-course-link" role="menuitem" onclick="swapNavLinks(event)" onkeydown="swapNavLinks(event)">Add New Course</a></li>
+                    <li><a href="#" class="nav-link" id="new-page-link" role="menuitem" onclick="swapNavLinks(event)" onkeydown="swapNavLinks(event)">Add New Page</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div role="region" id="list-courses" class="hidden section">
+                <h2>All Courses</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Number</th>
+                            <th>Type</th>
+                            <th>Blurb</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                            <th>Preview</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses"></tbody>
+                </table>
+            </div>
+            <div role="region" id="list-pages" class="active section">
+                <h2>All Pages</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                            <th>Preview</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pages"></tbody>
+                </table>
+            </div>
+            <div role="region" id="new-course" class="hidden section">
+                <h2>Add New Course</h2>
+                <form id="new-course-form" action="javascript:void(0);" method="POST" onsubmit="createCourse()">
+
+                    <label for="course-title">Course Title</label>
+                    <input type="text" id="course-title" placeholder="Course Title">
+                    <label for="course-num">Course Number</label>
+                    <input type="text" id="course-num" />
+                    <label for="course-type" placeholder="Course Type">Course Type</label>
+                    <input type="text" id="course-type" placeholder="Course Type" />
+                    <label for="course-blurb">Course Blurb</label>
+                    <textarea rows="50" id="course-blurb" placeholder="Course Blurb"></textarea>
+                    <div class="btn-cont">
+                        <button type="submit">Add Course</button>
+                        <button type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+            <div role="region" id="new-page" class="hidden section">
+                <h2>Add New Page</h2>
+                <form id="new-page-form" action="javascript:void(0);" method="POST" onsubmit="createPage()">
+
+                    <label for="page-title">Page Title</label>
+                    <input type="text" id="page-title" placeholder="Page Title">
+                    <label for="page-json">Page JSON</label>
+                    <textarea rows="50" id="page-json" placeholder="Page JSON"></textarea>
+                    <div class="btn-cont">
+                        <button type="submit">Add Page</button>
+                        <button type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+            <div role="region" id="edit-course" class="hidden section">
+                <h2>Edit Course</h2>
+                <div id="courseEditForm">
+                    <form id="edit-course-form" action="javascript:void(0);" onsubmit="updateCourse()">
+                        <p id="edited-course-id"></p>
+                        <label for="edit-course-title">Course Title</label>
+                        <input type="text" id="edit-course-title" placeholder="Course Title">
+                        <label for="edit-course-num">Course Number</label>
+                        <input type="text" id="edit-course-num" />
+                        <label for="edit-course-type">Course Type</label>
+                        <input type="text" id="edit-course-type" placeholder="Course Type" />
+                        <label for="edit-course-blurb">Course Blurb</label>
+                        <textarea rows="50" id="edit-course-blurb" placeholder="Course Blurb"></textarea>
+                        <div class="btn-cont">
+                            <button type="submit">Save Course</button>
+                            <button type="reset" onkeydown="getPages(event)" onclick="getPages(event)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div role="region" id="edit-page" class="hidden section">
+                <h2>Edit Page</h2>
+                <div id="pageEditForm">
+                    <form id="edit-page-form" action="javascript:void(0);" onsubmit="updatePage()">
+                        <p id="edited-page-id"></p>
+                        <label for="edit-page-title">Page Title</label>
+                        <input type="text" id="edit-page-title">
+                        <label for="edit-page-json">Page JSON</label>
+                        <textarea rows="50" id="edit-page-json"></textarea>
+                        <div class="btn-cont">
+                            <button type="submit">Save Page</button>
+                            <button type="reset" onkeydown="getPages(event)" onclick="getPages(event)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <footer></footer>
+    </div>
+
+    <script src="js/helpers.js" asp-append-version="true"></script>
+    <script src="js/main.js" asp-append-version="true"></script>
+</body>
+</html>

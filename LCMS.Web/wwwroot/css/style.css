@@ -1,0 +1,158 @@
+﻿/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+        content: '';
+        content: none;
+    }
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+
+/****** App Styles ******/
+/* General Styles*/
+*:focus {
+    outline-color: #fff;
+    outline-offset: 5px;
+    outline-style: solid;
+    outline-width: 4px;
+}
+.hidden {
+    display: none;
+}
+.active {
+    display: block;
+}
+body {
+    font-family: Verdana, sans-serif;
+}
+
+/* Header */
+header {
+    background-color: #0069ad;
+    color: #fff;
+    height: 4em;
+    position: relative;
+}
+header h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    left: 0;
+    margin: 0 1em;
+    position: absolute;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+header nav {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+header li {
+    display: inline-block;
+    font-size: 1.5em;
+    font-weight: 500;
+    margin: 0 1em;
+}
+header li a {
+    color: #fff;
+    text-decoration: none;
+}
+header li a:hover {
+    font-weight: 600;
+    text-decoration: underline;
+}
+header li a:focus {
+    font-weight: 700;
+}
+
+/* Main */
+main {
+    padding: 2em 3em;
+}
+main div.section {
+    margin: 1em auto;
+    width: 80%;
+}
+main h2 {
+    border-bottom: 1px solid #333;
+    font-size: 1.3em;
+    line-height: 1.5;
+    margin-bottom: .5em;
+}
+main form {
+    margin: 2em auto 0;
+    width: 90%;
+}
+main label {
+    display: block;
+    margin-top: 1em;
+}
+main input, textarea {
+    display: block;
+    margin-top: 1em;
+    width: 99%
+}
+main div.btn-cont {
+    margin-top: 1em;
+    text-align: right;
+}
+main button {
+    margin: 1em 1em;
+}
+main button + button {
+    margin-right: 0;
+}
+
+div#list-pages table td {
+    padding: .5em .75em;
+}
+div#list-pages table td:first-child {
+    padding-left: 0;
+}
+
