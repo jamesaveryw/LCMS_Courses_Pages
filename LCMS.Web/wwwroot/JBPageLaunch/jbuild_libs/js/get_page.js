@@ -1,7 +1,8 @@
 ﻿const uri = '../../index.html/api/pages';
 
 function getPage() {
-    const id = location.search.substring(1);
+    const id = parseInt(location.search.substring(1));
+    console.log(id);
     fetch(`${uri}/${id}`, {
         method: 'GET',
         type: 'application/json',
@@ -16,7 +17,7 @@ function getPage() {
 }
 
 function _displayPage(data) {
-    let json = data.content;
+    let json = data.pg_Content;
     let jsonObj = JSON.parse(json);
     console.log(jsonObj);
     Lesson_Data_File(jsonObj);

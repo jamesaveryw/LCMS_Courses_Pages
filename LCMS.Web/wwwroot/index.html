@@ -26,9 +26,6 @@
                         <tr>
                             <th>ID</th>
                             <th>Title</th>
-                            <th>Number</th>
-                            <th>Type</th>
-                            <th>Blurb</th>
                             <th>Edit</th>
                             <th>Delete</th>
                             <th>Preview</th>
@@ -57,10 +54,10 @@
                 <form id="new-course-form" action="javascript:void(0);" method="POST" onsubmit="createCourse()">
 
                     <label for="course-title">Course Title</label>
-                    <input type="text" id="course-title" placeholder="Course Title">
-                    <label for="course-num">Course Number</label>
-                    <input type="text" id="course-num" />
-                    <label for="course-type" placeholder="Course Type">Course Type</label>
+                    <input type="text" id="course-title" placeholder="Course Title" />
+                    <label for="course-number">Course Number</label>
+                    <input type="text" id="course-number" placeholder="Course Number" />
+                    <label for="course-type">Course Type</label>
                     <input type="text" id="course-type" placeholder="Course Type" />
                     <label for="course-blurb">Course Blurb</label>
                     <textarea rows="50" id="course-blurb" placeholder="Course Blurb"></textarea>
@@ -76,8 +73,8 @@
 
                     <label for="page-title">Page Title</label>
                     <input type="text" id="page-title" placeholder="Page Title">
-                    <label for="page-json">Page JSON</label>
-                    <textarea rows="50" id="page-json" placeholder="Page JSON"></textarea>
+                    <label for="page-content">Page JSON</label>
+                    <textarea rows="50" id="page-content" placeholder="Page JSON"></textarea>
                     <div class="btn-cont">
                         <button type="submit">Add Page</button>
                         <button type="reset">Clear Form</button>
@@ -88,18 +85,18 @@
                 <h2>Edit Course</h2>
                 <div id="courseEditForm">
                     <form id="edit-course-form" action="javascript:void(0);" onsubmit="updateCourse()">
-                        <p id="edited-course-id"></p>
+                        <p id="edit-course-id"></p>
                         <label for="edit-course-title">Course Title</label>
                         <input type="text" id="edit-course-title" placeholder="Course Title">
-                        <label for="edit-course-num">Course Number</label>
-                        <input type="text" id="edit-course-num" />
+                        <label for="edit-course-number">Course Number</label>
+                        <input type="text" id="edit-course-number" />
                         <label for="edit-course-type">Course Type</label>
                         <input type="text" id="edit-course-type" placeholder="Course Type" />
                         <label for="edit-course-blurb">Course Blurb</label>
                         <textarea rows="50" id="edit-course-blurb" placeholder="Course Blurb"></textarea>
                         <div class="btn-cont">
                             <button type="submit">Save Course</button>
-                            <button type="reset" onkeydown="getPages(event)" onclick="getPages(event)">Cancel</button>
+                            <button type="reset" onkeydown="listRecords('courses', event)" onclick="listRecords('courses', event)">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -108,14 +105,14 @@
                 <h2>Edit Page</h2>
                 <div id="pageEditForm">
                     <form id="edit-page-form" action="javascript:void(0);" onsubmit="updatePage()">
-                        <p id="edited-page-id"></p>
+                        <p id="edit-page-id"></p>
                         <label for="edit-page-title">Page Title</label>
                         <input type="text" id="edit-page-title">
-                        <label for="edit-page-json">Page JSON</label>
-                        <textarea rows="50" id="edit-page-json"></textarea>
+                        <label for="edit-page-content">Page JSON</label>
+                        <textarea rows="50" id="edit-page-content"></textarea>
                         <div class="btn-cont">
                             <button type="submit">Save Page</button>
-                            <button type="reset" onkeydown="getPages(event)" onclick="getPages(event)">Cancel</button>
+                            <button type="reset" onkeydown="listRecords('pages', event)" onclick="listRecords('pages', event)">Cancel</button>
                         </div>
                     </form>
                 </div>
