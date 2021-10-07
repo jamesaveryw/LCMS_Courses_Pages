@@ -17,7 +17,7 @@ namespace LCMS.Data
             builder.Entity<CoursePage>()
                 .HasKey(c => new { c.Crs_Id, c.Pg_Id });
             // Primary keys
-            /*builder.Entity<Course>().HasKey(q => q.Crs_Id);
+            builder.Entity<Course>().HasKey(q => q.Crs_Id);
             builder.Entity<Page>().HasKey(q => q.Pg_Id);
             builder.Entity<CoursePage>().HasKey(q =>
                 new {
@@ -33,7 +33,7 @@ namespace LCMS.Data
             builder.Entity<CoursePage>()
                 .HasOne(t => t.Course)
                 .WithMany(t => t.Crs_CoursesPages)
-                .HasForeignKey(t => t.Crs_Id);*/
+                .HasForeignKey(t => t.Crs_Id);
         }
     }
 }

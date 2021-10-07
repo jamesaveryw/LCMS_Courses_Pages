@@ -28,7 +28,7 @@ namespace LCMS.Domain
         public string Crs_Blurb { get; set; }
         //public ICollection<Page> Crs_Pages { get; set; }
         //might not need this next line
-        //public List<CoursePage> Crs_CoursesPages { get; set; }
+        public List<CoursePage> Crs_CoursesPages { get; set; }
 
     }
 }

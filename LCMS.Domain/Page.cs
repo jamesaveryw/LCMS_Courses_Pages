@@ -22,6 +22,6 @@ namespace LCMS.Domain
         public string Pg_Title { get; set; }
         public string Pg_Content { get; set; }
         //public ICollection<Course> Pg_Courses { get; set; }
-        //public List<CoursePage> Pg_CoursesPages { get; set; }
+        public List<CoursePage> Pg_CoursesPages { get; set; }
     }
 }
