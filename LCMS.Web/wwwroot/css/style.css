@@ -156,3 +156,34 @@ div#list-pages table td:first-child {
     padding-left: 0;
 }
 
+/* Modal */
+.modal-container {
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    left: 0;
+    position: fixed;
+    overflow-y: auto;
+    bottom: 0;
+    right: 0;
+    top: 0;
+}
+.modal-container.open {
+    display: block;
+}
+.modal {
+    background-color: #fff;
+    border: 1px solid #000;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.12), 0 15px 12px rgba(0, 0, 0, 0.22);
+    box-sizing: border-box;
+    display: none;
+    left: 50vw;
+    min-height: auto;
+    min-width: calc(640px - (15px * 2));
+    position: absolute;
+    padding: 15px;
+    top: 4em;
+    transform: translateX(-50%);
+}
+.modal.open {
+    display: block;
+}

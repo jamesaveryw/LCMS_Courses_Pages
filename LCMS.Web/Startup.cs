@@ -35,8 +35,10 @@ namespace LCMS.Web
             services.AddDbContext<LCMSContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:LCMSDB"])); 
             services.AddScoped<IPagesRepository, PagesRepository>();
             services.AddScoped<ICoursesRepository, CoursesRepository>();
+            services.AddScoped<ICoursesPagesRepository, CoursesPagesRepository>();
             services.AddScoped<IPagesService,PagesService>();
             services.AddScoped<ICoursesService, CoursesService>();
+            services.AddScoped<ICoursesPagesService, CoursesPagesService>();
             services.AddControllers();
         }
 

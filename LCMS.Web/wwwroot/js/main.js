@@ -95,13 +95,90 @@ function createCourse() {
         .catch(error => console.error('Unable to add item.', error));
 }
 
+function displayList(item, e) {
+    let type = e.target.className.replace(/list-/, '') + 's';
+    let id;
+    if (type == 'courses') {
+        id = item.crs_Id;
+    }
+    else if (type == 'pages') {
+        id = item.pg_Id;
+    }
+    let fullURI = baseURI + 'coursespages/' + type;
+    fetch(`${fullURI}/${id}`)
+        .then(response => response.json())
+        .then(data => _displayListInModal(item, data, type))
+        .catch(error => console.error('Unable to get items.', error));
+    // get list of all pages currently in course
+    // open a modal
+    // list pages
+}
+
+function _displayListInModal(item, data, type) {
+    if (type === 'courses') {
+        let modal = document.getElementById('page-list-modal');
+        document.getElementById('crs_title').innerHTML = 'Course: ' + item.crs_Number;
+        document.getElementById('crs_intro').innerHTML = 'Pages in "' + item.crs_Title + ':"';
+        data.forEach(item => {
+            let tr = document.createElement('tr');
+            let td1 = document.createElement('td').innerHTML = item.pg_Id;
+            let td2 = document.createElement('td').innerHTML = item.pg_Title;
+            tr.append(td1, td2);
+            modal.querySelector('tbody').appendChild(tr);
+            modal.classList.add('open');
+        });
+    }
+    else if (type === 'pages') {
+        let modal = document.getElementById('course-list-modal');
+        modal.getElementById('crs_title').innerHTML = 'Page ' + item.pg_Title;
+        modal.getElementById('crs_intro').innerHTML = 'Courses "' + item.pg_Title + '" appears in:'
+
+    }
+
+
+
+    
+
+    /*if (data.length === 0) {
+        // no pages/courses 
+        let noRecords = document.createElement('p');
+        let noRecordsTextNode = document.createTextNode(noRecordsString);
+        noRecords.appendChild(noRecordsTextNode);
+        modal.appendChild(noRecords);
+    }
+    else {
+        document.querySelector('#pc-list-modal thead > tr').append(th1, th2);
+        if (th3 != undefined) {
+            document.querySelector('#pc-list-modal thead > tr').appendChild(th3);
+        }
+        data.forEach(item => {
+            let tr = document.createElement('tr');
+            let properties = Object.keys(item);
+            for (let i = 0; i < properties.length; i++) {
+                let td = document.createElement('td');
+                let tdNode = document.createTextNode(item[properties[i]]);
+                td.appendChild(tdNode);
+                tr.appendChild(td);
+            }
+
+            document.querySelector('#pc-list-modal tbody').appendChild(tr);
+        });
+    }*/
+
+    document.getElementById('modal-container').classList.add('open');
+}
+
+function addPageToCourse() {
+    let fullURI = baseURI + 'coursespages';
+
+}
+
 function createPage() {
     let fullURI = baseURI + 'pages'
     const addTitleTextbox = document.getElementById('page-title');
     const addJSONTextbox = document.getElementById('page-content');
 
     const pageJSON = cleanJSON(addJSONTextbox.value.trim());
-    console.log(pageJSON);
 
     const item = {
         Pg_Id: 0,
@@ -127,7 +204,6 @@ function createPage() {
 function deleteRecord(item, e) {
     console.log(e.target.className.replace('delete-', ''))
     let fullURI = baseURI + e.target.className.replace('delete-', '');
-    //var canDrive = age > 16 ? 'yes' : 'no';
     let id = item.pg_Id ? item.pg_Id : item.crs_Id;
     console.log(id);
     fetch(`${fullURI}/${id}`, {
@@ -262,33 +338,44 @@ function _displayRecords(data, type) {
         td2.appendChild(textNode2);
 
         let td3 = document.createElement('td')
+        let listButton = button.cloneNode(false);
+        let textNode3
+        let nodeText = (type === 'courses') ? 'List Pages' : 'List Courses';
+        textNode3 = document.createTextNode(nodeText);
+        listButton.appendChild(textNode3);
+        listButton.classList.add('list-' + type.replace(/s$/, ''));
+        listButton.addEventListener('click', displayList.bind(listButton, item));
+        listButton.addEventListener('keydown', displayList.bind(listButton, item));
+        td3.appendChild(listButton);
+
+        let td4 = document.createElement('td')
         let editButton = button.cloneNode(false);
-        let textNode3 = document.createTextNode('Edit');
-        editButton.appendChild(textNode3);
+        let textNode4 = document.createTextNode('Edit');
+        editButton.appendChild(textNode4);
         editButton.classList.add('edit-' + type.replace(/s$/, ''));
         editButton.addEventListener('click', displayEditForm.bind(editButton, item));
         editButton.addEventListener('keydown', displayEditForm.bind(editButton, item));
-        td3.appendChild(editButton);
+        td4.appendChild(editButton);
 
-        let td4 = document.createElement('td')
+        let td5 = document.createElement('td')
         let deleteButton = button.cloneNode(false);
-        let textNode4 = document.createTextNode('Delete');
-        deleteButton.appendChild(textNode4);
+        let textNode5 = document.createTextNode('Delete');
+        deleteButton.appendChild(textNode5);
         deleteButton.classList.add('delete-' + type);
         deleteButton.addEventListener('click', deleteRecord.bind(deleteButton, item));
         deleteButton.addEventListener('keydown', deleteRecord.bind(deleteButton, item));
-        td4.appendChild(deleteButton);
+        td5.appendChild(deleteButton);
 
-        let td5 = document.createElement('td')
+        let td6 = document.createElement('td')
         let previewButton = button.cloneNode(false);
-        let textNode5 = document.createTextNode('Preview');
-        previewButton.appendChild(textNode5);
+        let textNode6 = document.createTextNode('Preview');
+        previewButton.appendChild(textNode6);
         previewButton.classList.add('preview-' + type);
         previewButton.addEventListener('click', previewRecord.bind(previewButton, item));
         previewButton.addEventListener('keydown', previewRecord.bind(previewButton, item));
-        td5.appendChild(previewButton);
+        td6.appendChild(previewButton);
 
-        tr.append(td1, td2, td3, td4, td5);
+        tr.append(td1, td2, td3, td4, td5, td6);
         tBody.appendChild(tr);
 
     });

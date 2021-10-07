@@ -26,6 +26,7 @@ namespace LCMS.Services.Factory
                 content: pageToCreate.Pg_Content
             );
         }
+
         public static CourseViewModel CreateViewModel(Course courseToView)
         {
             return new CourseViewModel()
@@ -46,6 +47,25 @@ namespace LCMS.Services.Factory
                 number: courseToCreate.Crs_Number,
                 type: courseToCreate.Crs_Type,
                 blurb: courseToCreate.Crs_Blurb
+            );
+        }
+
+        public static CoursePageViewModel CreateViewModel(CoursePage coursePageToView)
+        {
+            return new CoursePageViewModel()
+            {
+                Crs_Id = coursePageToView.Crs_Id,
+                Pg_Id = coursePageToView.Pg_Id,
+                CP_Order = coursePageToView.CP_Order
+            };
+        }
+
+        public static CoursePage CreateDomainModel(CoursePageViewModel coursePageToCreate)
+        {
+            return new CoursePage(
+                crs_id: coursePageToCreate.Crs_Id,
+                pg_id: coursePageToCreate.Pg_Id,
+                cp_order: coursePageToCreate.CP_Order
             );
         }
     }

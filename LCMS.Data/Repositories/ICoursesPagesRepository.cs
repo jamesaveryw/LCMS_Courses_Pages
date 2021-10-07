@@ -7,6 +7,7 @@ namespace LCMS.Data.Repositories
 {
     public interface ICoursesPagesRepository
     {
-        void AddPageToCourse(Course courseToAddTo, Page pageToAdd);
+        IEnumerable<Page> GetPagesInCourse(int coursePageId);
+        CoursePage CreateCoursePage(CoursePage createdCoursePage);
     }
 }

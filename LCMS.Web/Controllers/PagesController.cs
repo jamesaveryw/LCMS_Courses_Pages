@@ -36,7 +36,7 @@ namespace LCMS.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] PageViewModel pageForm)
+        public IActionResult Post(PageViewModel pageForm)
         {
             PageViewModel pageToReturn = _pagesService.CreatePage(pageForm);
 
@@ -44,7 +44,7 @@ namespace LCMS.Web.Controllers
         }
 
         [HttpPut("update-page")]
-        public IActionResult Update([FromBody] PageViewModel pageForm)
+        public IActionResult Update(PageViewModel pageForm)
         {
             _pagesService.UpdatePage(pageForm);
 

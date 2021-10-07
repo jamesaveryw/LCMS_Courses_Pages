@@ -26,7 +26,7 @@ namespace LCMS.Domain
         public string Crs_Number { get; set; }
         public string Crs_Type { get; set; }
         public string Crs_Blurb { get; set; }
-        //public ICollection<Page> Crs_Pages { get; set; }
+        public virtual ICollection<CoursePage> CoursesPages { get; set; }
         //might not need this next line
         public List<CoursePage> Crs_CoursesPages { get; set; }
 
