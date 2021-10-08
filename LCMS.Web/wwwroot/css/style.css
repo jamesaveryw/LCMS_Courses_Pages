@@ -188,7 +188,7 @@ table.record-list th {
     min-width: calc(640px - (15px * 2));
     position: absolute;
     padding: 15px;
-    top: 4em;
+    top: 6em;
     transform: translateX(-50%);
 }
 .modal.open {
@@ -209,4 +209,11 @@ table.record-list th {
 }
 .modal table.record-list {
     margin-top: 1em;
+}
+.modal div.buttons {
+    margin-top: 1em;
+    text-align: right;
+}
+.modal div.buttons button {
+    margin: 0 0 1em 1em;
 }

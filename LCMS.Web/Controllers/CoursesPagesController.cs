@@ -38,7 +38,6 @@ namespace LCMS.Web.Controllers
         [HttpGet("{crsId}-{pgId}")]
         public IActionResult GetPageOrder(int crsId, int pgId)
         {
-
             int orderNum = _coursesPagesService.GetPageOrder(crsId, pgId);
 
             return Ok(orderNum);
@@ -50,6 +49,14 @@ namespace LCMS.Web.Controllers
             CoursePageViewModel coursePageToReturn = _coursesPagesService.CreateCoursePage(coursePageForm);
 
             return Created("createCoursePage", coursePageToReturn);
+        }
+
+        [HttpPut("update-coursepage")]
+        public IActionResult Update(CoursePageViewModel CoursePageForm)
+        {
+            _coursesPagesService.UpdateCoursePage(CoursePageForm);
+
+            return NoContent();
         }
     }
 }

@@ -25,7 +25,7 @@ for (let navLink of navLinks) {
 
 
 
-listRecords("pages");
+listRecords("courses");
 
 // show/hide various sections
 // pass in the section that should be made active 
@@ -149,10 +149,15 @@ function _displayListInModal(srcItem, data, type) {
                 let td2 = document.createElement('td');
                 td2.innerHTML = item.pg_Title;
                 let td3 = document.createElement('td');
+                let orderInput = document.createElement('input');
+                setAttrs(orderInput, { "type": "text", "id": srcItem.crs_Id + "-" + item.pg_Id });
+                orderInput.disabled = true;
+                console.log(orderInput);
                 let orderNum;
                 getPageOrder(srcItem.crs_Id, item.pg_Id).then((data) => {
                     orderNum = data;
-                    td3.innerHTML = orderNum;
+                    orderInput.value = orderNum;
+                    td3.appendChild(orderInput);
                     tr.append(td1, td2, td3);
                     modal.querySelector('tbody').appendChild(tr);
                 });

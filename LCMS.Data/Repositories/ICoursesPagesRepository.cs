@@ -11,6 +11,6 @@ namespace LCMS.Data.Repositories
         IEnumerable<Course> GetCoursesPageIn(int coursePageId);
         CoursePage GetPageOrder(int crsId, int pgId);
         CoursePage CreateCoursePage(CoursePage createdCoursePage);
-
+        void UpdateCoursePage(CoursePage updatedCoursePage, int courseId, int pageId);
     }
 }

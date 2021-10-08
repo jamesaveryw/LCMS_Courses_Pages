@@ -46,5 +46,13 @@ namespace LCMS.Services.Services.Impl
 
             return coursePageToCreate;
         }
+
+        public void UpdateCoursePage(CoursePageViewModel coursePageToUpdate)
+        {
+            CoursePage updatedCoursePage = ModelFactory.CreateDomainModel(coursePageToUpdate);
+            _repository.UpdateCoursePage(updatedCoursePage, coursePageToUpdate.Crs_Id, coursePageToUpdate.Pg_Id);
+
+            return;
+        }
     }
 }

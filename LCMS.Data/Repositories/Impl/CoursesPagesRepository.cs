@@ -48,5 +48,18 @@ namespace LCMS.Data.Repositories.Impl
 
             return createdCoursePage;
         }
+
+        public void UpdateCoursePage(CoursePage updatedCoursePage, int courseId, int pageId)
+        {
+            //_context.Pages.Update(updatedPage);
+            //_context.SaveChanges();
+            CoursePage deletedCoursePage = _context.CoursesPages.FirstOrDefault(coursepage => coursepage.Crs_Id == courseId && coursepage.Pg_Id == pageId);
+            if (deletedCoursePage != null) _context.CoursesPages.Remove(deletedCoursePage);
+            updatedCoursePage.Crs_Id = courseId;
+            _context.CoursesPages.Add(updatedCoursePage);
+            _context.SaveChanges();
+
+            return;
+        }
     }
 }

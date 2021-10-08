@@ -11,5 +11,6 @@ namespace LCMS.Services.Services
         IEnumerable<CourseViewModel> GetCoursesPageIn(int coursePageId);
         int GetPageOrder(int crsId, int pgId);
         CoursePageViewModel CreateCoursePage(CoursePageViewModel coursePageToCreate);
+        void UpdateCoursePage(CoursePageViewModel coursePageToUpdate);
     }
 }
