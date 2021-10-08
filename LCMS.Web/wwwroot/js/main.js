@@ -132,7 +132,7 @@ function _displayListInModal(srcItem, data, type) {
     if (type === 'courses') {
         console.log("courses")
         modal = document.getElementById('page-list-modal');
-        document.getElementById('crs_title').innerHTML = 'Course: ' + srcItem.crs_Number;
+        document.querySelector('crs_title').innerHTML = 'Course: ' + srcItem.crs_Number;
         document.getElementById('crs_intro').innerHTML = 'Pages in "' + srcItem.crs_Title + ':"';
         modal.classList.add('open');
         if (data != null) {
@@ -155,8 +155,8 @@ function _displayListInModal(srcItem, data, type) {
     }
     else if (type === 'pages') {
         modal = document.getElementById('course-list-modal');
-        modal.getElementById('crs_title').innerHTML = 'Page ' + srcItem.pg_Title;
-        modal.getElementById('crs_intro').innerHTML = 'Courses "' + srcItem.pg_Title + '" appears in:';
+        document.getElementById('pg_title').innerHTML = 'Page ' + srcItem.pg_Title;
+        document.getElementById('pg_intro').innerHTML = 'Courses "' + srcItem.pg_Title + '" appears in:';
         modal.classList.add('open');
         if (data != null) {
             data.forEach(item => {
@@ -165,7 +165,9 @@ function _displayListInModal(srcItem, data, type) {
                 td1.innerHTML = item.crs_Id;
                 let td2 = document.createElement('td');
                 td2.innerHTML = item.crs_Title;
-                tr.append(td1, td2);
+                let td3 = document.createElement('td');
+                td3.innerHTML = item.crs_Number;
+                tr.append(td1, td2, td3);
                 modal.querySelector('tbody').appendChild(tr);
             });
         }

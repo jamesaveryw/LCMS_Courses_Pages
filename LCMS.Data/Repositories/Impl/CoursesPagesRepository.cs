@@ -14,6 +14,7 @@ namespace LCMS.Data.Repositories.Impl
         {
             _context = context;
         }
+
         public IEnumerable<Page> GetPagesInCourse(int coursePageId)
         {
             IEnumerable<Page> pages = _context.CoursesPages
@@ -22,6 +23,15 @@ namespace LCMS.Data.Repositories.Impl
                 .ToList();
 
             return pages;
+        }
+        public IEnumerable<Course> GetCoursesPageIn(int coursePageId)
+        {
+            IEnumerable<Course> courses = _context.CoursesPages
+                .Where(cp => cp.Pg_Id == coursePageId)
+                .Select(cp => cp.Course)
+                .ToList();
+
+            return courses;
         }
 
         public CoursePage GetPageOrder(int crsId, int pgId)

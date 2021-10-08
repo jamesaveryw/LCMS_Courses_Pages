@@ -24,6 +24,12 @@ namespace LCMS.Services.Services.Impl
 
             return pagesReturned;
         }
+        public IEnumerable<CourseViewModel> GetCoursesPageIn(int coursePageId)
+        {
+            IEnumerable<CourseViewModel> coursesReturned = _repository.GetCoursesPageIn(coursePageId).Select(coursepage => ModelFactory.CreateViewModel(coursepage)).ToList();
+
+            return coursesReturned;
+        }
 
         public int GetPageOrder(int crsId, int pgId)
         {
