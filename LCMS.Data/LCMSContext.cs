@@ -14,8 +14,6 @@ namespace LCMS.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<CoursePage>()
-                .HasKey(c => new { c.Crs_Id, c.Pg_Id });
             // Primary keys
             builder.Entity<Course>().HasKey(q => q.Crs_Id);
             builder.Entity<Page>().HasKey(q => q.Pg_Id);

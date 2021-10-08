@@ -8,6 +8,7 @@ namespace LCMS.Services.Services
     public interface ICoursesPagesService
     {
         IEnumerable<PageViewModel> GetPagesInCourse(int coursePageId);
+        int GetPageOrder(int crsId, int pgId);
         CoursePageViewModel CreateCoursePage(CoursePageViewModel coursePageToCreate);
     }
 }

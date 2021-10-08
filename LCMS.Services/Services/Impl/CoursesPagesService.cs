@@ -25,6 +25,14 @@ namespace LCMS.Services.Services.Impl
             return pagesReturned;
         }
 
+        public int GetPageOrder(int crsId, int pgId)
+        {
+            CoursePageViewModel coursePage = ModelFactory.CreateViewModel(_repository.GetPageOrder(crsId, pgId));
+            int orderNum = coursePage.CP_Order;
+
+            return orderNum;
+        }
+
         public CoursePageViewModel CreateCoursePage(CoursePageViewModel coursePageToCreate)
         {
             CoursePage newCoursePage = ModelFactory.CreateDomainModel(coursePageToCreate);

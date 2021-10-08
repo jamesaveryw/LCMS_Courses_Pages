@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LCMS.Data.Migrations
 {
     [DbContext(typeof(LCMSContext))]
-    [Migration("20211007131350_CoursePageDataTable")]
-    partial class CoursePageDataTable
+    [Migration("20211008142645_startFromScratch")]
+    partial class startFromScratch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,10 +53,10 @@ namespace LCMS.Data.Migrations
                     b.Property<int>("Pg_Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseCrs_Id")
+                    b.Property<int>("CP_Order")
                         .HasColumnType("int");
 
-                    b.Property<int>("Order")
+                    b.Property<int?>("CourseCrs_Id")
                         .HasColumnType("int");
 
                     b.Property<int?>("PagePg_Id")
@@ -67,6 +67,8 @@ namespace LCMS.Data.Migrations
                     b.HasIndex("CourseCrs_Id");
 
                     b.HasIndex("PagePg_Id");
+
+                    b.HasIndex("Pg_Id");
 
                     b.ToTable("CoursesPages");
                 });
@@ -91,17 +93,43 @@ namespace LCMS.Data.Migrations
 
             modelBuilder.Entity("LCMS.Domain.CoursePage", b =>
                 {
-                    b.HasOne("LCMS.Domain.Course", "Course")
-                        .WithMany()
+                    b.HasOne("LCMS.Domain.Course", null)
+                        .WithMany("CoursesPages")
                         .HasForeignKey("CourseCrs_Id");
 
-                    b.HasOne("LCMS.Domain.Page", "Page")
-                        .WithMany()
+                    b.HasOne("LCMS.Domain.Course", "Course")
+                        .WithMany("Crs_CoursesPages")
+                        .HasForeignKey("Crs_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LCMS.Domain.Page", null)
+                        .WithMany("CoursesPages")
                         .HasForeignKey("PagePg_Id");
+
+                    b.HasOne("LCMS.Domain.Page", "Page")
+                        .WithMany("Pg_CoursesPages")
+                        .HasForeignKey("Pg_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Course");
 
                     b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("LCMS.Domain.Course", b =>
+                {
+                    b.Navigation("CoursesPages");
+
+                    b.Navigation("Crs_CoursesPages");
+                });
+
+            modelBuilder.Entity("LCMS.Domain.Page", b =>
+                {
+                    b.Navigation("CoursesPages");
+
+                    b.Navigation("Pg_CoursesPages");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,11 +19,11 @@ namespace LCMS.Domain
             Pg_Id = pg_id;
             CP_Order = cp_order;
         }
+
         //[Key, Column(Order = 0)]
         public int Crs_Id { get; set; }
         //[Key, Column(Order = 1)]
         public int Pg_Id { get; set; }
-
         public virtual Course Course { get; set; }
         public virtual Page Page { get; set; }
 

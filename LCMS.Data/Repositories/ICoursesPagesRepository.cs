@@ -8,6 +8,8 @@ namespace LCMS.Data.Repositories
     public interface ICoursesPagesRepository
     {
         IEnumerable<Page> GetPagesInCourse(int coursePageId);
+        CoursePage GetPageOrder(int crsId, int pgId);
         CoursePage CreateCoursePage(CoursePage createdCoursePage);
+
     }
 }

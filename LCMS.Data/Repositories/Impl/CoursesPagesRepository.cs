@@ -21,18 +21,14 @@ namespace LCMS.Data.Repositories.Impl
                 .Select(cp => cp.Page)
                 .ToList();
 
-                // IEnumerable<List<String>> resultSelect = employees.Select(e=> e.Skills);
-                //.Where(cp => cp.Crs_Id == coursePageId)
-                //.Select(cp => cp.Page)
-                //.ToList();
-
-            //var commentsOfMember = context.MemberComments
-            //.Where(mc => mc.MemberId == 1)
-            //.Select(mc => mc.Comment)
-            //.ToList();
-            //IEnumerable<CoursePage> coursespages = _context.CoursesPages.ToList();
-
             return pages;
+        }
+
+        public CoursePage GetPageOrder(int crsId, int pgId)
+        {
+            CoursePage cpToReturn = _context.CoursesPages.FirstOrDefault(cp => cp.Crs_Id == crsId && cp.Pg_Id == pgId);
+               
+            return cpToReturn;
         }
 
         public CoursePage CreateCoursePage(CoursePage createdCoursePage)

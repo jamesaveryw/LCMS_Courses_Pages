@@ -23,6 +23,8 @@ for (let navLink of navLinks) {
     navLink.addEventListener('keydown', swapNavLinks);
 }
 
+
+
 listRecords("pages");
 
 // show/hide various sections
@@ -33,6 +35,13 @@ function showHide(activeEl) {
     document.querySelector('.active').classList.remove('active');
     activeEl.classList.remove('hidden');
     activeEl.classList.add('active');
+}
+
+function closeModal(e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        document.querySelector('.modal.open').classList.remove('open');
+        document.querySelector('.modal-container.open').classList.remove('open');
+    }
 }
 
 
@@ -96,48 +105,71 @@ function createCourse() {
 }
 
 function displayList(item, e) {
-    let type = e.target.className.replace(/list-/, '') + 's';
-    let id;
-    if (type == 'courses') {
-        id = item.crs_Id;
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let type = e.target.className.replace(/list-/, '') + 's';
+        let id;
+        if (type == 'courses') {
+            id = item.crs_Id;
+        }
+        else if (type == 'pages') {
+            id = item.pg_Id;
+        }
+        let fullURI = baseURI + 'coursespages/' + type;
+        console.log(fullURI);
+        fetch(`${fullURI}/${id}`)
+            .then(response => response.json())
+            .then(data => _displayListInModal(item, data, type))
+            .catch((error) => {
+                console.error('Unable to get items.', error)
+                _displayListInModal(item, null, type);
+            });
     }
-    else if (type == 'pages') {
-        id = item.pg_Id;
-    }
-    let fullURI = baseURI + 'coursespages/' + type;
-    fetch(`${fullURI}/${id}`)
-        .then(response => response.json())
-        .then(data => _displayListInModal(item, data, type))
-        .catch(error => console.error('Unable to get items.', error));
-    // get list of all pages currently in course
-    // open a modal
-    // list pages
 }
 
-function _displayListInModal(item, data, type) {
+function _displayListInModal(srcItem, data, type) {
+    console.log('_displayListInModal')
+    let modal;
     if (type === 'courses') {
-        let modal = document.getElementById('page-list-modal');
-        document.getElementById('crs_title').innerHTML = 'Course: ' + item.crs_Number;
-        document.getElementById('crs_intro').innerHTML = 'Pages in "' + item.crs_Title + ':"';
-        data.forEach(item => {
-            let tr = document.createElement('tr');
-            let td1 = document.createElement('td').innerHTML = item.pg_Id;
-            let td2 = document.createElement('td').innerHTML = item.pg_Title;
-            tr.append(td1, td2);
-            modal.querySelector('tbody').appendChild(tr);
-            modal.classList.add('open');
-        });
+        console.log("courses")
+        modal = document.getElementById('page-list-modal');
+        document.getElementById('crs_title').innerHTML = 'Course: ' + srcItem.crs_Number;
+        document.getElementById('crs_intro').innerHTML = 'Pages in "' + srcItem.crs_Title + ':"';
+        modal.classList.add('open');
+        if (data != null) {
+            data.forEach(item => {
+                let tr = document.createElement('tr');
+                let td1 = document.createElement('td');
+                td1.innerHTML = item.pg_Id;
+                let td2 = document.createElement('td');
+                td2.innerHTML = item.pg_Title;
+                let td3 = document.createElement('td');
+                let orderNum;
+                getPageOrder(srcItem.crs_Id, item.pg_Id).then((data) => {
+                    orderNum = data;
+                    td3.innerHTML = orderNum;
+                    tr.append(td1, td2, td3);
+                    modal.querySelector('tbody').appendChild(tr);
+                });
+            });
+        }
     }
     else if (type === 'pages') {
-        let modal = document.getElementById('course-list-modal');
-        modal.getElementById('crs_title').innerHTML = 'Page ' + item.pg_Title;
-        modal.getElementById('crs_intro').innerHTML = 'Courses "' + item.pg_Title + '" appears in:'
-
-    }
-
-
-
-    
+        modal = document.getElementById('course-list-modal');
+        modal.getElementById('crs_title').innerHTML = 'Page ' + srcItem.pg_Title;
+        modal.getElementById('crs_intro').innerHTML = 'Courses "' + srcItem.pg_Title + '" appears in:';
+        modal.classList.add('open');
+        if (data != null) {
+            data.forEach(item => {
+                let tr = document.createElement('tr');
+                let td1 = document.createElement('td');
+                td1.innerHTML = item.crs_Id;
+                let td2 = document.createElement('td');
+                td2.innerHTML = item.crs_Title;
+                tr.append(td1, td2);
+                modal.querySelector('tbody').appendChild(tr);
+            });
+        }
+    }    
 
     /*if (data.length === 0) {
         // no pages/courses 
@@ -166,6 +198,29 @@ function _displayListInModal(item, data, type) {
     }*/
 
     document.getElementById('modal-container').classList.add('open');
+    modal.focus();
+}
+function checkUserHosting(hostEmail, callback) {
+    return fetch('http://localhost:3001/activities/' + hostEmail)
+        .then((response) => {
+            return response.json().then((data) => {
+                console.log(data);
+                return data;
+            }).catch((err) => {
+                console.log(err);
+            })
+        });
+}
+
+function getPageOrder(crsId, pgId) {
+    let fullURI = baseURI + 'coursespages';
+    return fetch(`${fullURI}/${crsId}-${pgId}`)
+        .then((response) => {
+            return response.json().then((data) => {
+                console.log(data);
+                return data;
+            }).catch((error) => { console.error('Unable to get items.', error) })
+        });
 }
 
 function addPageToCourse() {
@@ -202,31 +257,34 @@ function createPage() {
 }
 
 function deleteRecord(item, e) {
-    console.log(e.target.className.replace('delete-', ''))
-    let fullURI = baseURI + e.target.className.replace('delete-', '');
-    let id = item.pg_Id ? item.pg_Id : item.crs_Id;
-    console.log(id);
-    fetch(`${fullURI}/${id}`, {
-        method: 'DELETE'
-    })
-        .then(() => listRecords(e.target.className.replace('delete-', '')))
-        .catch(error => console.error('Unable to delete item.', error));
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let fullURI = baseURI + e.target.className.replace('delete-', '');
+        let id = item.pg_Id ? item.pg_Id : item.crs_Id;
+        console.log(id);
+        fetch(`${fullURI}/${id}`, {
+            method: 'DELETE'
+        })
+            .then(() => listRecords(e.target.className.replace('delete-', '')))
+            .catch(error => console.error('Unable to delete item.', error));
+    }
 }
 
 function displayEditForm(item, e) {
-    showHide(document.getElementById(e.target.className));
-    let type = e.target.className.replace(/edit-/, '');
-    console.log(type);
-    let properties = Object.keys(item);
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        showHide(document.getElementById(e.target.className));
+        let type = e.target.className.replace(/edit-/, '');
+        console.log(type);
+        let properties = Object.keys(item);
 
-    for (let property of properties) {
-        let abbrevProp = property.replace(/(crs|pg)_/, '').toLowerCase();
-        let propEl = document.getElementById('edit-' + type + '-' + abbrevProp);
-        if (propEl.value != undefined) {
-            propEl.value = item[property];
-        }
-        else if (/id/i.test(property)) {
-            propEl.innerHTML = "<strong>ID:</strong> " + item[property];
+        for (let property of properties) {
+            let abbrevProp = property.replace(/(crs|pg)_/, '').toLowerCase();
+            let propEl = document.getElementById('edit-' + type + '-' + abbrevProp);
+            if (propEl.value != undefined) {
+                propEl.value = item[property];
+            }
+            else if (/id/i.test(property)) {
+                propEl.innerHTML = "<strong>ID:</strong> " + item[property];
+            }
         }
     }
 }

@@ -149,11 +149,18 @@ main button + button {
     margin-right: 0;
 }
 
-div#list-pages table td {
+div#list-pages table td,
+table.record-list td,
+table.record-list th {
     padding: .5em .75em;
 }
-div#list-pages table td:first-child {
+div#list-pages table td:first-child,
+table.record-list table td:first-child {
     padding-left: 0;
+}
+div#list-pages table th,
+table.record-list th {
+    text-align: left;
 }
 
 /* Modal */
@@ -186,4 +193,20 @@ div#list-pages table td:first-child {
 }
 .modal.open {
     display: block;
+}
+.modal span.close-modal {
+    border: solid 1px #000;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.12), 0 15px 12px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    float: right;
+    font-size: 1.3em;
+    padding: .5em;
+}
+.modal h2 {
+    clear: right;
+    font-size: 1.4em;
+    margin-bottom: 1em;
+}
+.modal table.record-list {
+    margin-top: 1em;
 }

@@ -35,6 +35,15 @@ namespace LCMS.Web.Controllers
             return Ok();
         }
 
+        [HttpGet("{crsId}-{pgId}")]
+        public IActionResult GetPageOrder(int crsId, int pgId)
+        {
+
+            int orderNum = _coursesPagesService.GetPageOrder(crsId, pgId);
+
+            return Ok(orderNum);
+        }
+
         [HttpPost]
         public IActionResult Post(CoursePageViewModel coursePageForm)
         {
