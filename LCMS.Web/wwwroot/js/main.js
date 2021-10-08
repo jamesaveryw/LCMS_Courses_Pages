@@ -39,8 +39,14 @@ function showHide(activeEl) {
 
 function closeModal(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+
+        if (document.querySelector('.modal.open .record-list')) {
+            document.querySelector('.modal.open .record-list tbody').innerHTML = '';
+        }
         document.querySelector('.modal.open').classList.remove('open');
         document.querySelector('.modal-container.open').classList.remove('open');
+
+
     }
 }
 
@@ -132,7 +138,7 @@ function _displayListInModal(srcItem, data, type) {
     if (type === 'courses') {
         console.log("courses")
         modal = document.getElementById('page-list-modal');
-        document.querySelector('crs_title').innerHTML = 'Course: ' + srcItem.crs_Number;
+        document.getElementById('crs_title').innerHTML = 'Course: ' + srcItem.crs_Number;
         document.getElementById('crs_intro').innerHTML = 'Pages in "' + srcItem.crs_Title + ':"';
         modal.classList.add('open');
         if (data != null) {
