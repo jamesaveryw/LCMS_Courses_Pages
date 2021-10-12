@@ -44,6 +44,11 @@ function closeModal(e) {
         document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
         document.querySelector('.modal.open').classList.remove('open');
         document.querySelector('.modal-container.open').classList.remove('open');
+
+        let hiddenCols = slice(document.querySelectorAll('.hidden-col'));
+        for (let hiddenCol of hiddenCols) {
+            hiddenCol.classList.add('hidden');
+        }
     }
 }
 
@@ -92,7 +97,7 @@ function createCourse() {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(() => listRecords('courses'))
+        .then(() => listRecords('courses', 'course-list-modal'))
         .then(() => document.getElementById("new-course-form").reset())
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -117,7 +122,7 @@ function updateCourse() {
         },
         body: JSON.stringify(item)
     })
-        .then(() => listRecords('courses'))
+        .then(() => listRecords('courses', 'course-list-modal'))
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
@@ -138,15 +143,28 @@ function editPagesInCourse(e) {
 
         document.getElementById('init-btns').classList.add('hidden');
         document.getElementById('swap-btns').classList.remove('hidden');
+        document.querySelector('#page-list-modal .close-modal').classList.add('hidden');
     }
 }
 
 function savePagesInCourse(e) {
-    // get all trs and loop through
-    // create object out of tr w/ course_Id, page_Id, and Order
-    // if CoursePage exists
-    // call CoursePage update
-    // if new page call create new CoursePage
+    let trs = document.querySelectorAll('#page-list-modal-table tr');
+
+    for (let tr of trs) {
+        if (tr.classList.contains('new-page')) {
+            // add new record to CoursesPages
+            let record = {
+                Crs_Id: parseInt(e.target.getAttribute('data-course-id')),
+                Pg_Id: parseInt(tr.querySelector('td:nth-child(1)').innerHTML),
+                CP_Order: parseInt(tr.querySelector('td:nth-child(3) input').value)
+            };
+
+            console.log(record);
+        }
+        else {
+            // update CoursesPages record
+        }
+    }
 
     // loop through crsPgToDelete
     // delete each record
@@ -169,6 +187,7 @@ function cancelPagesInCourseUpdates(e) {
 
         document.getElementById('init-btns').classList.remove('hidden');
         document.getElementById('swap-btns').classList.add('hidden');
+        document.querySelector('#page-list-modal .close-modal').classList.remove('hidden');
 
         listRecords("pages", "page-list-modal", e);
 
@@ -177,10 +196,61 @@ function cancelPagesInCourseUpdates(e) {
 }
 
 function addPageToCourse(e) {
-    // let fullURI = baseURI + 'coursespages/courses/' + e.target.getAttribute('data-course-id');
-    // list all pages not currently in course with add buttons
-    //
+    let tr = document.createElement('tr');
+    tr.className = 'new-page';
+    let tdID = document.createElement('td');
+    let textNodeID = document.createTextNode(e.target.getAttribute('data-page-id'));
+    tdID.appendChild(textNodeID);
 
+    let tdTitle = document.createElement('td');
+    let textNodeTitle = document.createTextNode(findAncestor(e.target, 'node', 'TR').querySelector('td:nth-child(2)').innerHTML);
+    tdTitle.appendChild(textNodeTitle);
+
+    let tdOrder = document.createElement('td');
+    let orderInput = document.createElement('input');
+    orderInput.setAttribute('type', 'text');
+    orderInput.value = 0;
+    tdOrder.appendChild(orderInput);
+
+    let tdRemove = document.createElement('td');
+    tdRemove.className = 'hidden hidden-col';
+    let removeButton = document.createElement('button');
+    setAttrs(removeButton, { 'type': 'button', 'data-course-id': e.target.getAttribute('data-course-id'), 'data-page-id': e.target.getAttribute('data-page-id') });
+    removeButton.addEventListener('click', deletePgFromCrs);
+    removeButton.addEventListener('keydown', deletePgFromCrs);
+    let textNodeRemove = document.createTextNode('Remove');
+    removeButton.appendChild(textNodeRemove);
+    tdRemove.appendChild(removeButton);
+
+    tr.append(tdID, tdTitle, tdOrder, tdRemove);
+    document.getElementById('page-list-modal-table').appendChild(tr);
+
+    let addObj = {
+        'pg_Id': e.target.getAttribute('data-page-id'),
+        'crs_Id': e.target.getAttribute('data-course-id')
+    }
+    crsPgToAdd.push(addObj)
+
+    alert(findAncestor(e.target, 'node', 'TR').querySelector('td:nth-child(2)').innerHTML + " added to course.");
+}
+
+function donePgAdd(e) {
+    editPagesInCourse(e);
+    document.getElementById('add-page-modal').classList.remove('open');
+    document.getElementById('page-list-modal').classList.add('open');
+    document.getElementById('add-page-modal-table').innerHTML = '';
+}
+
+function cancelPgAdd(e) {
+    let addedPgs = slice(document.querySelectorAll('#page-list-modal-table tr.new-page'));
+
+    for (let addedPg of addedPgs) {
+        document.getElementById('page-list-modal-table').removeChild(addedPg);
+    }
+
+    document.getElementById('add-page-modal').classList.remove('open');
+    document.getElementById('page-list-modal').classList.add('open');
+    document.getElementById('add-page-modal-table').innerHTML = '';
 }
 
 function deletePgFromCrs(e) {
@@ -195,8 +265,6 @@ function deletePgFromCrs(e) {
         'crs_Id': e.target.getAttribute('data-course-id')
     }
     crsPgToDelete.push(deleteObj);
-
-    console.log(crsPgToDelete);
 }
 
 
@@ -249,7 +317,7 @@ function updatePage() {
         },
         body: JSON.stringify(item)
     })
-        .then(() => listRecords('pages'))
+        .then(() => listRecords('pages', 'page-list-modal'))
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
@@ -387,7 +455,11 @@ function _displayRecords(data, type, contID, e) {
         document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
         document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML = document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML + window[opType][srcID][opTitle];
         document.getElementById('cancel-chng-btn').setAttribute('data-' + opType.replace(/s$/, '') + '-id', srcID);
+        document.getElementById('save-chng-btn').setAttribute('data-' + opType.replace(/s$/, '') + '-id', srcID);
         document.getElementById('add-page-btn').setAttribute('data-' + opType.replace(/s$/, '') + '-id', srcID);
+    }
+    if (/add-page/.test(contID)) {
+        document.getElementById('page-list-modal').classList.remove('open');
     }
 
     const button = document.createElement('button');

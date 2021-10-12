@@ -19,13 +19,13 @@ namespace LCMS.Data.Repositories.Impl
         {
 
             IEnumerable<Page> pages = (from page in _context.Pages
-                         where !_context.CoursesPages.Any(cp => cp.Pg_Id == page.Pg_Id && cp.Crs_Id == courseId)
-                         select new Page
-                         {
-                             Pg_Id = page.Pg_Id,
-                             Pg_Title = page.Pg_Title,
-                             Pg_Content = page.Pg_Content
-                         }).ToList();
+                where !_context.CoursesPages.Any(cp => cp.Pg_Id == page.Pg_Id && cp.Crs_Id == courseId)
+                select new Page
+                {
+                    Pg_Id = page.Pg_Id,
+                    Pg_Title = page.Pg_Title,
+                    Pg_Content = page.Pg_Content
+                }).ToList();
 
             return pages;
         }

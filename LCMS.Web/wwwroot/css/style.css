@@ -217,3 +217,6 @@ table.record-list th {
 .modal div.buttons button {
     margin: 0 0 1em 1em;
 }
+.modal tr.new-page {
+    background-color: lightyellow;
+}
