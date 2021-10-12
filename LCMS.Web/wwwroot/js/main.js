@@ -25,7 +25,7 @@ for (let navLink of navLinks) {
 
 
 
-listRecords("courses");
+listRecords("courses", "list-courses");
 
 // show/hide various sections
 // pass in the section that should be made active 
@@ -39,17 +39,10 @@ function showHide(activeEl) {
 
 function closeModal(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-
-        if (document.querySelector('.modal.open .record-list')) {
-            document.querySelector('.modal.open .record-list tbody').innerHTML = '';
-        }
         document.querySelector('.modal.open').classList.remove('open');
         document.querySelector('.modal-container.open').classList.remove('open');
-
-
     }
 }
-
 
 function swapNavLinks(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
@@ -60,27 +53,18 @@ function swapNavLinks(e) {
         if (/list-courses/.test(id)) {
             type = 'courses';
 
-            listRecords(type);
+            listRecords(type, 'list-courses');
         }
         else if (/list-pages/.test(id)) {
             type = 'pages';
 
-            listRecords(type);
+            listRecords(type, 'list-pages');
         }
     }
 }
 
-function listRecords(type, e) {
-    console.log('listRecords');
-    let fullURI = baseURI + type;
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        fetch(fullURI)
-            .then(response => response.json())
-            .then(data => _displayRecords(data, type))
-            .catch(error => console.error('Unable to get items.', error));
-    }
-}
 
+// Course Functions
 function createCourse() {
     let fullURI = baseURI + 'courses'
     const addTitleTextbox = document.getElementById('course-title');
@@ -110,7 +94,170 @@ function createCourse() {
         .catch(error => console.error('Unable to add item.', error));
 }
 
-function displayList(item, e) {
+function updateCourse() {
+    let fullURI = baseURI + 'courses';
+    const itemId = parseInt(document.getElementById('edit-course-id').innerText.replace(/ID: /, ''));
+
+    const item = {
+        Crs_Id: itemId,
+        Crs_Title: document.getElementById('edit-course-title').value.trim(),
+        Crs_Number: document.getElementById('edit-course-number').value.trim(),
+        Crs_Type: document.getElementById('edit-course-type').value.trim(),
+        Crs_Blurb: document.getElementById('edit-course-blurb').value.trim()
+    };
+
+    fetch(`${fullURI}/update-course`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+    })
+        .then(() => listRecords('courses'))
+        .catch(error => console.error('Unable to update item.', error));
+
+    return false;
+}
+
+function addPageToCourse() {
+    let fullURI = baseURI + 'coursespages';
+
+}
+
+
+// Page Functions
+function createPage() {
+    let fullURI = baseURI + 'pages'
+    const addTitleTextbox = document.getElementById('page-title');
+    const addJSONTextbox = document.getElementById('page-content');
+
+    const pageJSON = cleanJSON(addJSONTextbox.value.trim());
+
+    const item = {
+        Pg_Id: 0,
+        Pg_Title: addTitleTextbox.value.trim(),
+        Pg_Content: pageJSON
+    };
+
+    fetch(fullURI, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+    })
+        .then(response => response.json())
+        .then(() => listRecords('pages'))
+        .then(() => document.getElementById("new-page-form").reset())
+        .catch(error => console.error('Unable to add item.', error));
+
+}
+
+function updatePage() {
+    let fullURI = baseURI + 'pages';
+    const itemId = parseInt(document.getElementById('edit-page-id').innerText.replace(/ID: /, ''));
+    console.log(itemId);
+    const pageJSON = cleanJSON(document.getElementById('edit-page-content').value.trim());
+
+    const item = {
+        Pg_Id: itemId,
+        Pg_Title: document.getElementById('edit-page-title').value.trim(),
+        Pg_Content: pageJSON
+    };
+
+    fetch(`${fullURI}/update-page`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+    })
+        .then(() => listRecords('pages'))
+        .catch(error => console.error('Unable to update item.', error));
+
+    return false;
+}
+
+
+// Record Functions
+function deleteRecord(item, e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let fullURI = baseURI + e.target.className.replace('delete-', '');
+        let id = item.pg_Id ? item.pg_Id : item.crs_Id;
+        console.log(id);
+        fetch(`${fullURI}/${id}`, {
+            method: 'DELETE'
+        })
+            .then(() => listRecords(e.target.className.replace('delete-', '')))
+            .catch(error => console.error('Unable to delete item.', error));
+    }
+}
+
+function displayEditForm(item, e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        showHide(document.getElementById(e.target.className));
+        let type = e.target.className.replace(/edit-/, '');
+        console.log(type);
+        let properties = Object.keys(item);
+
+        for (let property of properties) {
+            let abbrevProp = property.replace(/(crs|pg)_/, '').toLowerCase();
+            let propEl = document.getElementById('edit-' + type + '-' + abbrevProp);
+            if (propEl.value != undefined) {
+                propEl.value = item[property];
+            }
+            else if (/id/i.test(property)) {
+                propEl.innerHTML = "<strong>ID:</strong> " + item[property];
+            }
+        }
+    }
+}
+
+function closeInput() {
+    document.getElementById('editForm').style.display = 'none';
+}
+
+function previewRecord(item, e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        if (e.target.className.replace(/preview-/, '') == 'pages') {
+            window.open("JBPageLaunch/index.html?" + item.pg_Id, "Preview", "fullscreen=yes");
+        }
+    }
+}
+
+
+
+// Display Functions
+function listRecords(type, contID, e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let fullURI;
+
+        if (!/modal/.test(contID)) {
+            fullURI = baseURI + type;
+        }
+        else if (/page-list-modal/.test(contID)) {
+            fullURI = baseURI + 'coursespages/' + type + '/' + e.target.getAttribute('data-course-id');
+            console.log(fullURI)
+        }
+        else if (/course-list-modal/.test(contID)) {
+            fullURI = baseURI + 'coursespages/' + type + '/' + e.target.getAttribute('data-page-id');
+            console.log(fullURI)
+        }
+        // add page modal
+        /*else if () {
+        }*/
+
+        fetch(fullURI)
+            .then(response => response.json())
+            .then(data => _displayRecords(data, type, contID, e))
+            .catch(error => console.error('Unable to get items.', error));
+    }
+}
+
+/*function displayList(item, e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         let type = e.target.className.replace(/list-/, '') + 's';
         let id;
@@ -121,7 +268,6 @@ function displayList(item, e) {
             id = item.pg_Id;
         }
         let fullURI = baseURI + 'coursespages/' + type;
-        console.log(fullURI);
         fetch(`${fullURI}/${id}`)
             .then(response => response.json())
             .then(data => _displayListInModal(item, data, type))
@@ -130,9 +276,130 @@ function displayList(item, e) {
                 _displayListInModal(item, null, type);
             });
     }
+}*/
+
+function _displayRecords(data, type, contID, e) {
+    console.log(type)
+    // reset table contents
+    const tBody = document.getElementById(contID + '-table');
+    tBody.innerHTML = '';
+
+    console.log(data)
+
+    // set vars based on type
+    let id;
+    let title;
+    let opType;
+    if (type === 'pages') {
+        pages = data;
+        id = 'pg_Id';
+        title = 'pg_Title';
+        opType = 'courses';
+    }
+    else if (type === 'courses') {
+        courses = data;
+        id = 'crs_Id';
+        title = 'crs_Title';
+        opType = 'pages'
+    }
+
+    // show modal if contID contains modal
+    if (/modal/.test(contID)) {
+        document.getElementById(contID).classList.add('open');
+        document.getElementById('modal-container').classList.add('open');
+    }
+
+    const button = document.createElement('button');
+
+    data.forEach(item => {
+        console.log(item);
+        // row 1
+        let tr = document.createElement('tr');
+
+        let tdID = document.createElement('td');
+        let textNodeID = document.createTextNode(item[id]);
+        tdID.appendChild(textNodeID);
+
+        let tdTitle = document.createElement('td')
+        let textNodeTitle = document.createTextNode(item[title]);
+        tdTitle.appendChild(textNodeTitle);
+
+        if (!/modal/.test(contID)) {
+
+            let tdList = document.createElement('td')
+            let listButton = button.cloneNode(false);
+            let nodeText = (type === 'courses') ? 'List Pages' : 'List Courses';
+            let textNodeList = document.createTextNode(nodeText);
+            listButton.appendChild(textNodeList);
+            listButton.classList.add('list-' + type.replace(/s$/, ''));
+            listButton.setAttribute('data-' + type.replace(/s$/, '') + '-id', item[id]);
+            listButton.addEventListener('click', listRecords.bind(listButton, opType, opType.replace(/s$/, '') + '-list-modal'));
+            listButton.addEventListener('keydown', listRecords.bind(listButton, opType, opType.replace(/s$/, '') + '-list-modal'));
+            tdList.appendChild(listButton);
+
+            let tdEdit = document.createElement('td')
+            let editButton = button.cloneNode(false);
+            let textNodeEdit = document.createTextNode('Edit');
+            editButton.appendChild(textNodeEdit);
+            editButton.classList.add('edit-' + type.replace(/s$/, ''));
+            editButton.addEventListener('click', displayEditForm.bind(editButton, item));
+            editButton.addEventListener('keydown', displayEditForm.bind(editButton, item));
+            tdEdit.appendChild(editButton);
+
+            let tdDelete = document.createElement('td')
+            let deleteButton = button.cloneNode(false);
+            let textNodeDelete = document.createTextNode('Delete');
+            deleteButton.appendChild(textNodeDelete);
+            deleteButton.classList.add('delete-' + type);
+            deleteButton.addEventListener('click', deleteRecord.bind(deleteButton, item));
+            deleteButton.addEventListener('keydown', deleteRecord.bind(deleteButton, item));
+            tdDelete.appendChild(deleteButton);
+
+            let tdPreview = document.createElement('td')
+            let previewButton = button.cloneNode(false);
+            let textNodePreview = document.createTextNode('Preview');
+            previewButton.appendChild(textNodePreview);
+            previewButton.classList.add('preview-' + type);
+            previewButton.addEventListener('click', previewRecord.bind(previewButton, item));
+            previewButton.addEventListener('keydown', previewRecord.bind(previewButton, item));
+            tdPreview.appendChild(previewButton);
+
+            tr.append(tdID, tdTitle, tdList, tdEdit, tdDelete, tdPreview);
+        }
+        else if (/page-list/.test(contID)) {
+
+            let tdOrder = document.createElement('td');
+            let orderInput = document.createElement('input');
+            setAttrs(orderInput, { 'disabled': 'true', 'type': 'text' });
+            orderInput.value = item['cP_Order'];
+            tdOrder.appendChild(orderInput);
+
+            let tdRemove = document.createElement('td');
+            tdRemove.className = 'hidden hidden-col';
+            let removeButton = button.cloneNode(false);
+            setAttrs(removeButton, { 'type': 'button' });
+            let textNodeRemove = document.createTextNode('Remove');
+            removeButton.appendChild(textNodeRemove);
+            tdRemove.appendChild(removeButton);
+
+            tr.append(tdID, tdTitle, tdOrder, tdRemove);
+        }
+        else if (/course-list/.test(contID)) {
+
+            let tdNum = document.createElement('td');
+            let textNodeNum = document.createTextNode(item['crs_Number']);
+            tdNum.appendChild(textNodeNum);
+
+            tr.append(tdID, tdTitle, tdNum);
+        }
+
+
+        tBody.appendChild(tr);
+
+    });
 }
 
-function _displayListInModal(srcItem, data, type) {
+/*function _displayListInModal(srcItem, data, type) {
     console.log(data)
     let modal;
     if (type === 'courses') {
@@ -181,274 +448,14 @@ function _displayListInModal(srcItem, data, type) {
         }
     }    
 
-    /*if (data.length === 0) {
-        // no pages/courses 
-        let noRecords = document.createElement('p');
-        let noRecordsTextNode = document.createTextNode(noRecordsString);
-        noRecords.appendChild(noRecordsTextNode);
-        modal.appendChild(noRecords);
-    }
-    else {
-        document.querySelector('#pc-list-modal thead > tr').append(th1, th2);
-        if (th3 != undefined) {
-            document.querySelector('#pc-list-modal thead > tr').appendChild(th3);
-        }
-        data.forEach(item => {
-            let tr = document.createElement('tr');
-            let properties = Object.keys(item);
-            for (let i = 0; i < properties.length; i++) {
-                let td = document.createElement('td');
-                let tdNode = document.createTextNode(item[properties[i]]);
-                td.appendChild(tdNode);
-                tr.appendChild(td);
-            }
-
-            document.querySelector('#pc-list-modal tbody').appendChild(tr);
-        });
-    }*/
 
     document.getElementById('modal-container').classList.add('open');
     modal.focus();
-}
-function checkUserHosting(hostEmail, callback) {
-    return fetch('http://localhost:3001/activities/' + hostEmail)
-        .then((response) => {
-            return response.json().then((data) => {
-                console.log(data);
-                return data;
-            }).catch((err) => {
-                console.log(err);
-            })
-        });
-}
+}*/
 
-function getPageOrder(crsId, pgId) {
-    let fullURI = baseURI + 'coursespages';
-    return fetch(`${fullURI}/${crsId}-${pgId}`)
-        .then((response) => {
-            return response.json().then((data) => {
-                console.log(data);
-                return data;
-            }).catch((error) => { console.error('Unable to get items.', error) })
-        });
-}
 
-function addPageToCourse() {
-    let fullURI = baseURI + 'coursespages';
 
-}
 
-function createPage() {
-    let fullURI = baseURI + 'pages'
-    const addTitleTextbox = document.getElementById('page-title');
-    const addJSONTextbox = document.getElementById('page-content');
-
-    const pageJSON = cleanJSON(addJSONTextbox.value.trim());
-
-    const item = {
-        Pg_Id: 0,
-        Pg_Title: addTitleTextbox.value.trim(),
-        Pg_Content: pageJSON
-    };
-
-    fetch(fullURI, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(item)
-    })
-        .then(response => response.json())
-        .then(() => listRecords('pages'))
-        .then(() => document.getElementById("new-page-form").reset())
-        .catch(error => console.error('Unable to add item.', error));
-
-}
-
-function deleteRecord(item, e) {
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        let fullURI = baseURI + e.target.className.replace('delete-', '');
-        let id = item.pg_Id ? item.pg_Id : item.crs_Id;
-        console.log(id);
-        fetch(`${fullURI}/${id}`, {
-            method: 'DELETE'
-        })
-            .then(() => listRecords(e.target.className.replace('delete-', '')))
-            .catch(error => console.error('Unable to delete item.', error));
-    }
-}
-
-function displayEditForm(item, e) {
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        showHide(document.getElementById(e.target.className));
-        let type = e.target.className.replace(/edit-/, '');
-        console.log(type);
-        let properties = Object.keys(item);
-
-        for (let property of properties) {
-            let abbrevProp = property.replace(/(crs|pg)_/, '').toLowerCase();
-            let propEl = document.getElementById('edit-' + type + '-' + abbrevProp);
-            if (propEl.value != undefined) {
-                propEl.value = item[property];
-            }
-            else if (/id/i.test(property)) {
-                propEl.innerHTML = "<strong>ID:</strong> " + item[property];
-            }
-        }
-    }
-}
-
-function updateCourse() {
-    let fullURI = baseURI + 'courses';
-    const itemId = parseInt(document.getElementById('edit-course-id').innerText.replace(/ID: /, ''));
-
-    const item = {
-        Crs_Id: itemId,
-        Crs_Title: document.getElementById('edit-course-title').value.trim(),
-        Crs_Number: document.getElementById('edit-course-number').value.trim(),
-        Crs_Type: document.getElementById('edit-course-type').value.trim(),
-        Crs_Blurb: document.getElementById('edit-course-blurb').value.trim()
-    };
-
-    fetch(`${fullURI}/update-course`, {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(item)
-    })
-        .then(() => listRecords('courses'))
-        .catch(error => console.error('Unable to update item.', error));
-
-    return false;
-}
-
-function updatePage() {
-    let fullURI = baseURI + 'pages';
-    const itemId = parseInt(document.getElementById('edit-page-id').innerText.replace(/ID: /, ''));
-    console.log(itemId);
-    const pageJSON = cleanJSON(document.getElementById('edit-page-content').value.trim());
-    
-    const item = {
-        Pg_Id: itemId,
-        Pg_Title: document.getElementById('edit-page-title').value.trim(),
-        Pg_Content: pageJSON
-    };
-
-    fetch(`${fullURI}/update-page`, {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(item)
-    })
-        .then(() => listRecords('pages'))
-        .catch(error => console.error('Unable to update item.', error));
-
-    return false;
-}
-
-function closeInput() {
-    document.getElementById('editForm').style.display = 'none';
-}
-
-function _displayCount(itemCount) {
-    const name = (itemCount === 1) ? 'to-do' : 'to-dos';
-
-    document.getElementById('counter').innerText = `${itemCount} ${name}`;
-}
-
-function previewRecord(item, e) {
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        if (e.target.className.replace(/preview-/, '') == 'pages') {
-            window.open("JBPageLaunch/index.html?" + item.pg_Id, "Preview", "fullscreen=yes");
-        }
-    }
-}
-
-function _displayRecords(data, type) {
-    showHide(document.getElementById('list-' + type));
-
-    const tBody = document.getElementById(type);
-    console.log(tBody)
-    tBody.innerHTML = '';
-
-    //_displayCount(data.length);
-    let id;
-    let title;
-
-    if (type === 'pages') {
-        pages = data;
-        id = 'pg_Id';
-        title = 'pg_Title';
-    }
-    else if (type === 'courses') {
-        courses = data;
-        id = 'crs_Id';
-        title = 'crs_Title';
-    }
-
-    const button = document.createElement('button');
-
-    data.forEach(item => {
-        console.log(item);
-        // row 1
-        let tr = document.createElement('tr');
-
-        let td1 = document.createElement('td');
-        let textNode1 = document.createTextNode(item[id]);
-        td1.appendChild(textNode1);
-     
-        let td2 = document.createElement('td')
-        let textNode2 = document.createTextNode(item[title]);
-        td2.appendChild(textNode2);
-
-        let td3 = document.createElement('td')
-        let listButton = button.cloneNode(false);
-        let textNode3
-        let nodeText = (type === 'courses') ? 'List Pages' : 'List Courses';
-        textNode3 = document.createTextNode(nodeText);
-        listButton.appendChild(textNode3);
-        listButton.classList.add('list-' + type.replace(/s$/, ''));
-        listButton.addEventListener('click', displayList.bind(listButton, item));
-        listButton.addEventListener('keydown', displayList.bind(listButton, item));
-        td3.appendChild(listButton);
-
-        let td4 = document.createElement('td')
-        let editButton = button.cloneNode(false);
-        let textNode4 = document.createTextNode('Edit');
-        editButton.appendChild(textNode4);
-        editButton.classList.add('edit-' + type.replace(/s$/, ''));
-        editButton.addEventListener('click', displayEditForm.bind(editButton, item));
-        editButton.addEventListener('keydown', displayEditForm.bind(editButton, item));
-        td4.appendChild(editButton);
-
-        let td5 = document.createElement('td')
-        let deleteButton = button.cloneNode(false);
-        let textNode5 = document.createTextNode('Delete');
-        deleteButton.appendChild(textNode5);
-        deleteButton.classList.add('delete-' + type);
-        deleteButton.addEventListener('click', deleteRecord.bind(deleteButton, item));
-        deleteButton.addEventListener('keydown', deleteRecord.bind(deleteButton, item));
-        td5.appendChild(deleteButton);
-
-        let td6 = document.createElement('td')
-        let previewButton = button.cloneNode(false);
-        let textNode6 = document.createTextNode('Preview');
-        previewButton.appendChild(textNode6);
-        previewButton.classList.add('preview-' + type);
-        previewButton.addEventListener('click', previewRecord.bind(previewButton, item));
-        previewButton.addEventListener('keydown', previewRecord.bind(previewButton, item));
-        td6.appendChild(previewButton);
-
-        tr.append(td1, td2, td3, td4, td5, td6);
-        tBody.appendChild(tr);
-
-    });
-}
 
 function cleanJSON(json) {
     json = json.replace(/\/\*(?:.|\n)*?\*\//g, ""); // remove all multiline comments
