@@ -131,19 +131,19 @@
                         <th>ID</th>
                         <th>Page Title</th>
                         <th>Order</th>
-                        <th class="hidden">Remove</th>
+                        <th class="hidden hidden-col">Remove</th>
                     </tr>
                 </thead>
                 <tbody id="page-list-modal-table">
                 </tbody>
             </table>
-            <div class="init-buttons">
+            <div id="init-btns" class="buttons">
                 <button id="add-page-btn" type="button">Add Page</button>
                 <button id="edit-pages-btn" type="button" onclick="editPagesInCourse(event)" onkeydown="editPagesInCourse(event)">Edit Page List</button>
             </div>
-            <div class="swap-buttons hidden">
+            <div id="swap-btns" class="buttons hidden">
                 <button id="save-chng-btn" type="button">Save Changes</button>
-                <button id="cancel-chng-btn" type="button">Cancel Changes</button>
+                <button id="cancel-chng-btn" type="button" onclick="cancelPagesInCourseUpdates(event)" onkeydown="cancelPagesInCourseUpdates(event)">Cancel Changes</button>
             </div>
         </div>
         <div class="modal" id="course-list-modal" tabindex="-1">

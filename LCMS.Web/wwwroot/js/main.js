@@ -39,7 +39,6 @@ function showHide(activeEl) {
 
 function closeModal(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        console.log(document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1'))
         document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
         document.querySelector('.modal.open').classList.remove('open');
         document.querySelector('.modal-container.open').classList.remove('open');
@@ -129,6 +128,38 @@ function editPagesInCourse(e) {
         for (let disabledInput of disabledInputs) {
             disabledInput.removeAttribute('disabled');
         }
+
+        let hiddenEls = slice(document.querySelectorAll('#page-list-modal  .hidden'));
+        for (let hiddenEl of hiddenEls) {
+            hiddenEl.classList.remove('hidden');
+        }
+
+        document.getElementById('init-btns').classList.add('hidden');
+        document.getElementById('swap-btns').classList.remove('hidden');
+    }
+}
+
+function savePagesInCourse(e) {
+
+}
+
+function cancelPagesInCourseUpdates(e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let disabledInputs = slice(document.querySelectorAll('#page-list-modal input:not([disabled])'));
+
+        for (let disabledInput of disabledInputs) {
+            disabledInput.setAttribute('disabled', true);
+        }
+
+        let hiddenEls = slice(document.querySelectorAll('#page-list-modal  .hidden-col'));
+        for (let hiddenEl of hiddenEls) {
+            hiddenEl.classList.add('hidden');
+        }
+
+        document.getElementById('init-btns').classList.remove('hidden');
+        document.getElementById('swap-btns').classList.add('hidden');
+
+        listRecords("pages", "page-list-modal", e);
     }
 }
 
@@ -320,12 +351,11 @@ function _displayRecords(data, type, contID, e) {
     // show modal if contID contains modal
     if (/modal/.test(contID)) {
         const srcID = e.target.getAttribute('data-' + opType.replace(/s$/, '') + '-id');
-        console.log(srcID);
         document.getElementById(contID).classList.add('open');
         document.getElementById('modal-container').classList.add('open');
-        console.log(window[opType][srcID][opTitle]);
-
+        document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
         document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML = document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML + window[opType][srcID][opTitle];
+        document.getElementById('cancel-chng-btn').setAttribute('data-' + opType.replace(/s$/, '') + '-id', srcID);
     }
 
     const button = document.createElement('button');
