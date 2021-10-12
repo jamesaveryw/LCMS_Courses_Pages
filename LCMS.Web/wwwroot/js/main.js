@@ -14,8 +14,8 @@
 });
 
 const baseURI = 'api/';
-let pages = [];
-let courses = [];
+var pages = { };
+var courses = { };
 
 let navLinks = slice(document.querySelectorAll('nav-link'));
 for (let navLink of navLinks) {
@@ -39,6 +39,8 @@ function showHide(activeEl) {
 
 function closeModal(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        console.log(document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1'))
+        document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
         document.querySelector('.modal.open').classList.remove('open');
         document.querySelector('.modal-container.open').classList.remove('open');
     }
@@ -118,6 +120,16 @@ function updateCourse() {
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
+}
+
+function editPagesInCourse(e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let disabledInputs = slice(document.querySelectorAll('#page-list-modal input[disabled]'));
+
+        for (let disabledInput of disabledInputs) {
+            disabledInput.removeAttribute('disabled');
+        }
+    }
 }
 
 function addPageToCourse() {
@@ -283,37 +295,43 @@ function _displayRecords(data, type, contID, e) {
     // reset table contents
     const tBody = document.getElementById(contID + '-table');
     tBody.innerHTML = '';
-
-    console.log(data)
+    console.log(data);
 
     // set vars based on type
     let id;
     let title;
+    let opTitle;
     let opType;
     if (type === 'pages') {
-        pages = data;
+        //pages = data;
         id = 'pg_Id';
         title = 'pg_Title';
+        opTitle = 'crs_Title';
         opType = 'courses';
     }
     else if (type === 'courses') {
-        courses = data;
+        //courses = data;
         id = 'crs_Id';
         title = 'crs_Title';
+        opTitle = 'pg_Title';
         opType = 'pages'
     }
 
     // show modal if contID contains modal
     if (/modal/.test(contID)) {
+        const srcID = e.target.getAttribute('data-' + opType.replace(/s$/, '') + '-id');
+        console.log(srcID);
         document.getElementById(contID).classList.add('open');
         document.getElementById('modal-container').classList.add('open');
+        console.log(window[opType][srcID][opTitle]);
+
+        document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML = document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML + window[opType][srcID][opTitle];
     }
 
     const button = document.createElement('button');
 
     data.forEach(item => {
-        console.log(item);
-        // row 1
+
         let tr = document.createElement('tr');
 
         let tdID = document.createElement('td');
@@ -325,6 +343,8 @@ function _displayRecords(data, type, contID, e) {
         tdTitle.appendChild(textNodeTitle);
 
         if (!/modal/.test(contID)) {
+            // save data item to global var with id as key
+            window[type][item[id]] = item;
 
             let tdList = document.createElement('td')
             let listButton = button.cloneNode(false);
@@ -370,7 +390,7 @@ function _displayRecords(data, type, contID, e) {
 
             let tdOrder = document.createElement('td');
             let orderInput = document.createElement('input');
-            setAttrs(orderInput, { 'disabled': 'true', 'type': 'text' });
+            setAttrs(orderInput, { 'disabled': true, 'type': 'text' });
             orderInput.value = item['cP_Order'];
             tdOrder.appendChild(orderInput);
 

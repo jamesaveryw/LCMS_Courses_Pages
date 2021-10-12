@@ -124,8 +124,7 @@
     <div class="modal-container" id="modal-container">
         <div class="modal" id="page-list-modal" tabindex="-1">
             <span class="close-modal" role="button" tabindex="0" onclick="closeModal()" onkeydown="closeModal()">X</span>
-            <h2 id="crs_title"></h2>
-            <p id="crs_intro"></p>
+            <h2 id="list-course-title">Course: </h2>
             <table class="record-list">
                 <thead>
                     <tr>
@@ -140,17 +139,16 @@
             </table>
             <div class="init-buttons">
                 <button id="add-page-btn" type="button">Add Page</button>
-                <button id="edit-pages-btn" type="button">Edit Page List</button>
+                <button id="edit-pages-btn" type="button" onclick="editPagesInCourse(event)" onkeydown="editPagesInCourse(event)">Edit Page List</button>
             </div>
-            <div class="swap-buttons">
-                <button id="add-page-btn" type="button">Add Page</button>
-                <button id="edit-pages-btn" type="button">Edit Page List</button>
+            <div class="swap-buttons hidden">
+                <button id="save-chng-btn" type="button">Save Changes</button>
+                <button id="cancel-chng-btn" type="button">Cancel Changes</button>
             </div>
         </div>
         <div class="modal" id="course-list-modal" tabindex="-1">
             <span class="close-modal" role="button" tabindex="0" onclick="closeModal()" onkeydown="closeModal()">X</span>
-            <h2 id="pg_title"></h2>
-            <p id="pg_intro"></p>
+            <h2 id="list-page-title">Page: </h2>
             <table class="record-list">
                 <thead>
                     <tr>
