@@ -15,6 +15,21 @@ namespace LCMS.Data.Repositories.Impl
             _context = context;
         }
 
+        public IEnumerable<Page> GetPagesNotInCourse(int courseId)
+        {
+
+            IEnumerable<Page> pages = (from page in _context.Pages
+                         where !_context.CoursesPages.Any(cp => cp.Pg_Id == page.Pg_Id && cp.Crs_Id == courseId)
+                         select new Page
+                         {
+                             Pg_Id = page.Pg_Id,
+                             Pg_Title = page.Pg_Title,
+                             Pg_Content = page.Pg_Content
+                         }).ToList();
+
+            return pages;
+        }
+
         public IEnumerable<PagesInCourse> GetPagesInCourse(int coursePageId)
         {
             // get list of all pages in course

@@ -16,6 +16,8 @@
 const baseURI = 'api/';
 var pages = { };
 var courses = { };
+var crsPgToDelete = [ ];
+var crsPgToAdd = [ ];
 
 let navLinks = slice(document.querySelectorAll('nav-link'));
 for (let navLink of navLinks) {
@@ -140,6 +142,15 @@ function editPagesInCourse(e) {
 }
 
 function savePagesInCourse(e) {
+    // get all trs and loop through
+    // create object out of tr w/ course_Id, page_Id, and Order
+    // if CoursePage exists
+    // call CoursePage update
+    // if new page call create new CoursePage
+
+    // loop through crsPgToDelete
+    // delete each record
+    // call cancelPagesInCourseUpdates to update modal, list all records, and clear crsPgToDelete
 
 }
 
@@ -160,12 +171,32 @@ function cancelPagesInCourseUpdates(e) {
         document.getElementById('swap-btns').classList.add('hidden');
 
         listRecords("pages", "page-list-modal", e);
+
+        crsPgToDelete = [ ];
     }
 }
 
-function addPageToCourse() {
-    let fullURI = baseURI + 'coursespages';
+function addPageToCourse(e) {
+    // let fullURI = baseURI + 'coursespages/courses/' + e.target.getAttribute('data-course-id');
+    // list all pages not currently in course with add buttons
+    //
 
+}
+
+function deletePgFromCrs(e) {
+    // remove from table
+    let tr = findAncestor(e.target, 'node', 'TR');
+    let tbody = findAncestor(tr, 'node', 'TBODY');
+    tbody.removeChild(tr);
+
+    // add to array to delete when updates are saved
+    let deleteObj = {
+        'pg_Id': e.target.getAttribute('data-page-id'),
+        'crs_Id': e.target.getAttribute('data-course-id')
+    }
+    crsPgToDelete.push(deleteObj);
+
+    console.log(crsPgToDelete);
 }
 
 
@@ -192,7 +223,7 @@ function createPage() {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(() => listRecords('pages'))
+        .then(() => listRecords('pages', 'page-list-modal'))
         .then(() => document.getElementById("new-page-form").reset())
         .catch(error => console.error('Unable to add item.', error));
 
@@ -283,15 +314,15 @@ function listRecords(type, contID, e) {
         }
         else if (/page-list-modal/.test(contID)) {
             fullURI = baseURI + 'coursespages/' + type + '/' + e.target.getAttribute('data-course-id');
-            console.log(fullURI)
         }
         else if (/course-list-modal/.test(contID)) {
             fullURI = baseURI + 'coursespages/' + type + '/' + e.target.getAttribute('data-page-id');
-            console.log(fullURI)
         }
-        // add page modal
-        /*else if () {
-        }*/
+        else if (/add-page-modal/.test(contID)) {
+            fullURI = baseURI + 'coursespages/' + type + '/-' + e.target.getAttribute('data-course-id');
+        }
+
+        console.log(fullURI);
 
         fetch(fullURI)
             .then(response => response.json())
@@ -322,7 +353,6 @@ function listRecords(type, contID, e) {
 }*/
 
 function _displayRecords(data, type, contID, e) {
-    console.log(type)
     // reset table contents
     const tBody = document.getElementById(contID + '-table');
     tBody.innerHTML = '';
@@ -333,6 +363,7 @@ function _displayRecords(data, type, contID, e) {
     let title;
     let opTitle;
     let opType;
+    let srcID;
     if (type === 'pages') {
         //pages = data;
         id = 'pg_Id';
@@ -350,12 +381,13 @@ function _displayRecords(data, type, contID, e) {
 
     // show modal if contID contains modal
     if (/modal/.test(contID)) {
-        const srcID = e.target.getAttribute('data-' + opType.replace(/s$/, '') + '-id');
+        srcID = e.target.getAttribute('data-' + opType.replace(/s$/, '') + '-id');
         document.getElementById(contID).classList.add('open');
         document.getElementById('modal-container').classList.add('open');
         document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
         document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML = document.getElementById('list-' + opType.replace(/s$/, '') + '-title').innerHTML + window[opType][srcID][opTitle];
         document.getElementById('cancel-chng-btn').setAttribute('data-' + opType.replace(/s$/, '') + '-id', srcID);
+        document.getElementById('add-page-btn').setAttribute('data-' + opType.replace(/s$/, '') + '-id', srcID);
     }
 
     const button = document.createElement('button');
@@ -427,7 +459,9 @@ function _displayRecords(data, type, contID, e) {
             let tdRemove = document.createElement('td');
             tdRemove.className = 'hidden hidden-col';
             let removeButton = button.cloneNode(false);
-            setAttrs(removeButton, { 'type': 'button' });
+            setAttrs(removeButton, { 'type': 'button', 'data-course-id': srcID, 'data-page-id': item[id] });
+            removeButton.addEventListener('click', deletePgFromCrs);
+            removeButton.addEventListener('keydown', deletePgFromCrs);
             let textNodeRemove = document.createTextNode('Remove');
             removeButton.appendChild(textNodeRemove);
             tdRemove.appendChild(removeButton);
@@ -441,6 +475,18 @@ function _displayRecords(data, type, contID, e) {
             tdNum.appendChild(textNodeNum);
 
             tr.append(tdID, tdTitle, tdNum);
+        }
+        else if (/add-page/.test(contID)) {
+            let tdAdd = document.createElement('td');
+            let addButton = button.cloneNode(false);
+            setAttrs(addButton, { 'type': 'button', 'data-course-id': srcID, 'data-page-id': item[id] });
+            addButton.addEventListener('click', addPageToCourse);
+            addButton.addEventListener('keydown', addPageToCourse);
+            let textNodeAdd = document.createTextNode('Add');
+            addButton.appendChild(textNodeAdd);
+            tdAdd.appendChild(addButton);
+
+            tr.append(tdID, tdTitle, tdAdd);
         }
 
 

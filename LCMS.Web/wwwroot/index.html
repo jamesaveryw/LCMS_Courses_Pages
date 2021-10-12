@@ -138,11 +138,11 @@
                 </tbody>
             </table>
             <div id="init-btns" class="buttons">
-                <button id="add-page-btn" type="button">Add Page</button>
+                <button id="add-page-btn" type="button" onclick="listRecords('pages', 'add-page-modal', event)" onkeydown="listRecords('pages', 'add-page-modal', event)">Add Page(s)</button>
                 <button id="edit-pages-btn" type="button" onclick="editPagesInCourse(event)" onkeydown="editPagesInCourse(event)">Edit Page List</button>
             </div>
             <div id="swap-btns" class="buttons hidden">
-                <button id="save-chng-btn" type="button">Save Changes</button>
+                <button id="save-chng-btn" type="button" onclick="savePagesInCourse(event)" onkeydown="savePagesInCourse(event)">Save Changes</button>
                 <button id="cancel-chng-btn" type="button" onclick="cancelPagesInCourseUpdates(event)" onkeydown="cancelPagesInCourseUpdates(event)">Cancel Changes</button>
             </div>
         </div>
@@ -162,7 +162,6 @@
             </table>
         </div>
         <div class="modal" id="add-page-modal" tabindex="-1">
-            <span class="close-modal" role="button" tabindex="0" onclick="closeModal()" onkeydown="closeModal()">X</span>
             <h2 id="crs_title"></h2>
             <p id="crs_intro"></p>
             <table class="record-list">
@@ -170,15 +169,15 @@
                     <tr>
                         <th>ID</th>
                         <th>Page Title</th>
-                        <th class="hidden hidden-col">Remove Page</th>
+                        <th>Add Page</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="add-page-modal-table">
                 </tbody>
             </table>
             <div class="buttons">
-                <button id="add-page-btn" type="button">Add Page</button>
-                <button id="edit-pages-btn" type="button">Edit Page List</button>
+                <button id="done-add-page-btn" type="button">Done</button>
+                <button id="cancel-add-page-btn" type="button">Cancel</button>
             </div>
         </div>
     </div>

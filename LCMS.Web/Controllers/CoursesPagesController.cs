@@ -19,8 +19,16 @@ namespace LCMS.Web.Controllers
             _coursesPagesService = coursesPagesService;
         }
 
+        [HttpGet("pages/-{id}")]
+        public IActionResult GetPagesNotInCourse(int id)
+        {
+            IEnumerable<PageViewModel> coursespages = _coursesPagesService.GetPagesNotInCourse(id);
+
+            return Ok(coursespages);
+        }
+
         [HttpGet("pages/{id}")]
-        public IActionResult GetPages(int id)
+        public IActionResult GetPagesInCourse(int id)
         {
             IEnumerable<PagesInCourseViewModel> coursespages = _coursesPagesService.GetPagesInCourse(id);
 

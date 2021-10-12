@@ -7,6 +7,7 @@ namespace LCMS.Services.Services
 {
     public interface ICoursesPagesService
     {
+        IEnumerable<PageViewModel> GetPagesNotInCourse(int courseId);
         IEnumerable<PagesInCourseViewModel> GetPagesInCourse(int coursePageId);
         IEnumerable<CourseViewModel> GetCoursesPageIn(int coursePageId);
         int GetPageOrder(int crsId, int pgId);
