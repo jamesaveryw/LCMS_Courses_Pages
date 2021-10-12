@@ -2,7 +2,7 @@
 
 namespace LCMS.Data.Migrations
 {
-    public partial class startFromScratch : Migration
+    public partial class InitialDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,19 +42,11 @@ namespace LCMS.Data.Migrations
                 {
                     Crs_Id = table.Column<int>(type: "int", nullable: false),
                     Pg_Id = table.Column<int>(type: "int", nullable: false),
-                    CP_Order = table.Column<int>(type: "int", nullable: false),
-                    CourseCrs_Id = table.Column<int>(type: "int", nullable: true),
-                    PagePg_Id = table.Column<int>(type: "int", nullable: true)
+                    CP_Order = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CoursesPages", x => new { x.Crs_Id, x.Pg_Id });
-                    table.ForeignKey(
-                        name: "FK_CoursesPages_Courses_CourseCrs_Id",
-                        column: x => x.CourseCrs_Id,
-                        principalTable: "Courses",
-                        principalColumn: "Crs_Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CoursesPages_Courses_Crs_Id",
                         column: x => x.Crs_Id,
@@ -62,28 +54,12 @@ namespace LCMS.Data.Migrations
                         principalColumn: "Crs_Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CoursesPages_Pages_PagePg_Id",
-                        column: x => x.PagePg_Id,
-                        principalTable: "Pages",
-                        principalColumn: "Pg_Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_CoursesPages_Pages_Pg_Id",
                         column: x => x.Pg_Id,
                         principalTable: "Pages",
                         principalColumn: "Pg_Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CoursesPages_CourseCrs_Id",
-                table: "CoursesPages",
-                column: "CourseCrs_Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CoursesPages_PagePg_Id",
-                table: "CoursesPages",
-                column: "PagePg_Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CoursesPages_Pg_Id",

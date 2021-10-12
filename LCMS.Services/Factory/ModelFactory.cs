@@ -68,5 +68,24 @@ namespace LCMS.Services.Factory
                 cp_order: coursePageToCreate.CP_Order
             );
         }
+
+        public static PagesInCourse CreateDomainModel(PagesInCourseViewModel pagesInCourseToCreate)
+        {
+            return new PagesInCourse(
+                pg_id: pagesInCourseToCreate.Pg_Id,
+                pg_title: pagesInCourseToCreate.Pg_Title,
+                cp_order: pagesInCourseToCreate.CP_Order
+            );
+        }
+
+        public static PagesInCourseViewModel CreateViewModel(PagesInCourse pagesInCourseToView)
+        {
+            return new PagesInCourseViewModel()
+            {
+                Pg_Id = pagesInCourseToView.Pg_Id,
+                Pg_Title = pagesInCourseToView.Pg_Title,
+                CP_Order = pagesInCourseToView.CP_Order
+            };
+        }
     }
 }

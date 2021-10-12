@@ -133,7 +133,7 @@ function displayList(item, e) {
 }
 
 function _displayListInModal(srcItem, data, type) {
-    console.log('_displayListInModal')
+    console.log(data)
     let modal;
     if (type === 'courses') {
         console.log("courses")
@@ -153,14 +153,11 @@ function _displayListInModal(srcItem, data, type) {
                 setAttrs(orderInput, { "type": "text", "id": srcItem.crs_Id + "-" + item.pg_Id });
                 orderInput.disabled = true;
                 console.log(orderInput);
-                let orderNum;
-                getPageOrder(srcItem.crs_Id, item.pg_Id).then((data) => {
-                    orderNum = data;
-                    orderInput.value = orderNum;
-                    td3.appendChild(orderInput);
-                    tr.append(td1, td2, td3);
-                    modal.querySelector('tbody').appendChild(tr);
-                });
+                orderInput.value = item.cP_Order;
+                 
+                td3.appendChild(orderInput);
+                tr.append(td1, td2, td3);
+                modal.querySelector('tbody').appendChild(tr);
             });
         }
     }
@@ -376,6 +373,7 @@ function _displayRecords(data, type) {
     showHide(document.getElementById('list-' + type));
 
     const tBody = document.getElementById(type);
+    console.log(tBody)
     tBody.innerHTML = '';
 
     //_displayCount(data.length);

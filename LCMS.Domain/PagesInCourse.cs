@@ -5,22 +5,24 @@ using System.Text;
 
 namespace LCMS.Domain
 {
-    public class Page
+    public class PagesInCourse
     {
-        public Page()
+
+        public PagesInCourse()
         {
+
         }
 
-        public Page(string title, string content)
+        public PagesInCourse(int pg_id, string pg_title, int cp_order)
         {
-            Pg_Title = title;
-            Pg_Content = content;
+            Pg_Id = pg_id;
+            Pg_Title = pg_title;
+            CP_Order = cp_order;
         }
 
         [Key]
         public int Pg_Id { get; set; }
         public string Pg_Title { get; set; }
-        public string Pg_Content { get; set; }
-        public List<CoursePage> Pg_CoursesPages { get; set; }
+        public int CP_Order { get; set; }
     }
 }

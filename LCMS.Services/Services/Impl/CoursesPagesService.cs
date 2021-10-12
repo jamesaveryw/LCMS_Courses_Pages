@@ -18,9 +18,9 @@ namespace LCMS.Services.Services.Impl
             _repository = repository;
         }
 
-        public IEnumerable<PageViewModel> GetPagesInCourse(int coursePageId)
+        public IEnumerable<PagesInCourseViewModel> GetPagesInCourse(int coursePageId)
         {
-            IEnumerable<PageViewModel> pagesReturned = _repository.GetPagesInCourse(coursePageId).Select(coursepage => ModelFactory.CreateViewModel(coursepage)).ToList();
+            IEnumerable<PagesInCourseViewModel> pagesReturned = _repository.GetPagesInCourse(coursePageId).Select(coursepage => ModelFactory.CreateViewModel(coursepage)).ToList();
 
             return pagesReturned;
         }
