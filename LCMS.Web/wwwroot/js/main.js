@@ -148,18 +148,30 @@ function editPagesInCourse(e) {
 }
 
 function savePagesInCourse(e) {
+    let fullURI;
     let trs = document.querySelectorAll('#page-list-modal-table tr');
 
     for (let tr of trs) {
         if (tr.classList.contains('new-page')) {
             // add new record to CoursesPages
-            let record = {
+            let item = {
                 Crs_Id: parseInt(e.target.getAttribute('data-course-id')),
                 Pg_Id: parseInt(tr.querySelector('td:nth-child(1)').innerHTML),
                 CP_Order: parseInt(tr.querySelector('td:nth-child(3) input').value)
             };
 
-            console.log(record);
+            fullURI = baseURI + 'coursespages';
+
+            fetch(fullURI, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(item)
+            })
+                .then(response => response.json())
+                .catch(error => console.error('Unable to add item.', error));
         }
         else {
             // update CoursesPages record
