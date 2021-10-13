@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex" />
+<meta name="google" content="notranslate" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LOMA 371</title>
+
+<link rel="stylesheet" href="jbuild_libs/css/bootstrap.min.css">
+<link href="jbuild_libs/css/font-awesome.css" rel="stylesheet">
+
+<link rel="stylesheet" href="jbuild_libs/css/hioc.css">
+
+<!-- For Portal page -->
+<link href="includes/css.light/portal.css" rel="stylesheet" type="text/css">
+<link href="includes/css.light/a11y.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="notranslate">
+<!-- Terms and Privacy -->	
+<div id="terms_cover">
+	<div id="lang_links"><span id="en">en</span><span id="ote">fr</span></div>
+	<div id="terms_load"></div>
+	<div id="accept_terms">        
+		<p class="terms_p">You must accept the above Agreement to use this Course Portal.</p>
+        <span id="acceptBtn" tabindex="0">Accept</span>
+		<span id="closeBtn" tabindex="0">Close</span>
+	</div>
+</div>
+    
+<!-- Sliding menu -->	
+<input type="checkbox" id="main-nav-check"/>  
+    
+<header id="indexHead">
+	<img alt="LOMA" class="lomalogo homelink" id="course_logo"/>
+    <span id="courseTitle" class="homelink" tabindex="0"></span>
+    <div id="headerModules">
+        <a class="moduleLink" tabindex="0">Module 1</a>
+        <a class="moduleLink" tabindex="0">Module 2</a>
+        <a class="moduleLink" tabindex="0">Module 3</a>
+        <a class="moduleLink" tabindex="0">Module 4</a>
+        <a class="moduleLink" tabindex="0">Module 5</a>
+        <a class="moduleLink" tabindex="0">Module 6</a>
+    </div>
+	<div id="homehelpexit">
+		<div id="hhe_home" class="homelink btooltip" tabindex="0" tooltip="Home"><img src="includes/images/homew.png" alt="home" /></div>
+		<div id="hhe_help" class="helplink btooltip" tabindex="0" tooltip="Help"><img src="includes/images/helpw.png" alt="help" /></div>
+		<div id="hhe_exit" class="exitlink btooltip" tabindex="0" tooltip="Exit"><img src="includes/images/exitw.png" alt="exit" /></div>
+	</div>
+	<div id="namebar">
+		<!-- <div id="returnToLsn" tabindex="0">&larr; Return to lesson</div> -->
+		<div id="returnToLsn" tabindex="0">&larr; Return to module</div>
+		<label for="main-nav-check" id="indexName" tabindex="0">Student Name <span style="margin-left: 15px;"><img src="includes/images/sm_rev_hamburger.png" /></span> <!-- <span style="margin-left: 15px;">&#9660;</span> --></label>
+	</div>
+</header>
+
+<!-- All Portal Content will be shown here... -->
+<div id="portalContents" tabindex="0"></div>
+
+<style>
+	#lessonContent p{width: 100%;}
+</style>
+<!-- Lessons will show here... maybe? -->
+<div class="col-lg-12 col-md-12 col-xs-12 lsn_scrl body_style" id="lessonContent" tabindex="0"></div>
+	
+<!-- Added by Jack -->
+<div id="pg_header" class="navbar navbar-inverse navbar-fixed-top col-lg-12 col-md-12 col-xs-12 " style="display: none; margin-top: 76px; text-align: center; background-color: #9A9A9A; width: 100%;">
+<!-- <span id="first"></span><span id="second"></span><span id="third"></span> -->
+<!-- TOC flyout added by Jack 2-1-2019 -->
+	<div class="navbar-header pull-left">
+		<!--  <a for="main-nav-check" id="nav-expander" class="nav-expander fixed"><i style="float:right;" class="fa fa-close fa-lg white" id="bar_close"></i></a> -->
+		<a class="nav-expander fixed"  href="javascript:toc_slide()"><i style="float:right;" class="fa fa-bars fa-lg white" id="bar_close"><span id="indexTOCText">Table of Contents</span></i></a>
+		<!-- fa-close fa-bars -->
+	</div>
+
+	<page_title id="Page_Title" ></page_title>  <!-- royalblue -->
+	<br>
+	<page_number id="cRpage"></page_number>
+	<div id="prg_Bar" style="height: 2px; background-color: #ed8c01; width: 0px; position: absolute; left: 0; bottom: 0;"></div><!-- margin-left: -20px; -->
+</div>	
+
+<!-- onscroll="myFunction()" -->	
+<!-- <div id="JcComponents" onscroll="progress_bar()" ontouchmove="progress_bar()" align="center" class="col-lg-12 col-md-12 col-xs-12 lsn_scrl body_style" style="display: none; background-color: white; width:100%; height:78%; overflow-y: auto; overflow-x: hidden; padding-bottom: 100px"> -->
+<div tabindex="0" id="JcComponents" align="center" class="col-lg-12 col-md-12 col-xs-12 lsn_scrl body_style"  style="display: none; background-color: white; width:100%; height:78%; overflow-y: auto; overflow-x: hidden; padding-bottom: 100px">
+
+	<!-- background-color: #ed8c01; -->
+<!--  margin-top: 112px; -->
+		
+	
+</div>	
+
+<div id="keytermsparent" class="body_style" tabindex="-1" style="display: none;"></div>		
+	
+<div id="Toc_flyout"></div>		
+<!-- Added by Jack -->	
+	
+<footer id="indexFooter">
+<div id="footMenu">
+    <div><img src="includes/images/dash_btn.png" class="dashlink" alt="Dashboard"><span class="footerlabel dashlink" tabindex="0">Dashboard</span></div>
+	<div><img src="includes/images/extra_btn_icon.png" class="resourcelink" alt="Resources"><span class="footerlabel resourcelink" tabindex="0">Resources</span></div>
+	<div><img src="includes/images/extra_btn_icon.png" class="preplink" alt="Exam Prep"><span class="footerlabel preplink" tabindex="0">Exam Prep</span></div>
+    <div><img src="includes/images/contact_btn.png" class="contactlink" alt="Contact"><span class="footerlabel contactlink" tabindex="0">Contact</span></div>
+    <div><img src="includes/images/glossary_btn.png" class="glossarylink" alt="Glossary"><span class="footerlabel glossarylink" tabindex="0">Glossary</span></div>
+</div>
+<div id="legalstuff">
+    <div id="copyrightnotice" style="display: inline-block;"></div>
+    <span style="white-space: nowrap;">
+        | <span class="termslink" tabindex="0">Terms of Use</span> 
+        | <span class="privacylink" tabindex="0">Privacy Policy</span>
+    </span>
+</div>    
+</footer>
+
+<!--json object-->
+<script type="text/javascript" src="includes/scripts/json/jcc_setup.js"></script>
+<script type="text/javascript" src="includes/scripts/json/toc.js"></script>
+<script type="text/javascript" src="includes/scripts/json/glossary.js"></script>
+<script type="text/javascript" src="includes/scripts/json/videolibrary.js"></script>
+<script type="text/javascript" src="includes/scripts/json/help.js"></script>
+<!--Support Libraries-->
+<script type="text/javascript" src="includes/scripts/libraries/jquery.min.js"></script>
+<script type="text/javascript" src="includes/scripts/libraries/circle-progress.min.js"></script>	
+<script type="text/javascript" src="includes/scripts/libraries/jquery.autocomplete.min.js"></script>	
+<script type="text/javascript" src="includes/scripts/libraries/jquery.validate.min.js"></script>
+<script type="text/javascript" src="includes/scripts/libraries/additional-methods.js"></script>
+<script type="text/javascript" src="includes/scripts/libraries/ua-parser.min.js"></script>
+<script type="text/javascript" src="includes/scripts/libraries/fuzzyset.js"></script>
+<!-- JackBuilder Runtime -->
+<script type="text/javascript" src="jbuild_libs/js/jack_builder_creator.js"></script>
+<!-- LMS/LRS -->
+<script type="text/javascript" src="includes/scripts/vars.js"></script>
+<script type="text/javascript" src="includes/scripts/lms/aicc.js"></script>
+<script type="text/javascript" src="includes/scripts/lms/APIWrapper.js"></script>
+<script type="text/javascript" src="includes/scripts/lms/tincan-min.js"></script>
+<script type="text/javascript" src="includes/scripts/lms/lmslrs.js"></script>
+<!--General script for portal-->
+<script type="text/javascript" src="includes/scripts/main.js"></script>
+<script type="text/javascript" src="includes/scripts/accessibility.js"></script>
+<!-- jBuilder Lessons -->
+<script src="jbuild_libs/css/bootstrap.min.js"></script>
+<script src="jbuild_libs/css/jquery.navgoco.js"></script>
+<script type="text/javascript" src="jbuild_libs/js/jq_flip.js"></script>
+<!-- PATCH -->
+<script src="patch/patch.js"></script>
+
+</body>
+</html>

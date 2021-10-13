@@ -1,0 +1,32 @@
+﻿#portalContents .theContent h1{
+    width: 50%;
+	font: 900 24px/36px Helvetica, Arial, "sans-serif";
+	font-stretch: ultra-expanded;
+	margin-bottom: 20px;
+    color: #1d1d1d;
+	color: rgba(0,112,175,0.65); /* Light BLue */
+	text-align: left;
+}
+.description h1{
+	display: block;
+	font: 900 24px/24px Helvetica, Arial, "sans-serif";
+	font-stretch: ultra-expanded;
+	margin-bottom: 20px;
+	/*color: #1d1d1d;*/
+    /*color: #48aaa9;*/
+    color: rgba(0,112,175,0.65); /* Light BLue */
+    /*color: rgba(71,153,151,1); /* Aqua */
+	text-align: left;
+}
+*:focus, a:focus {
+	outline: 3px solid #FF7D00;
+}
+a:focus {
+	outline-offset: 3px;
+}
+.glossary_items a {
+	text-decoration: underline;
+}
+.glossary_items a:not([href]) {
+	text-decoration: none;
+}

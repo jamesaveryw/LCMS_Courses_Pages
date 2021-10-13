@@ -14,13 +14,13 @@ namespace LCMS.Web.Controllers
     public class PackageController : ControllerBase
     {
 
-        private readonly Services.Services.ICoursesPagesService _coursesPagesService;
+        //private readonly Services.Services.ICoursesPagesService _coursesPagesService;
         private readonly Services.Services.ICoursesService _coursesService;
 
-        public PackageController(Services.Services.ICoursesPagesService coursesPagesService)
+        /*public PackageController(Services.Services.ICoursesPagesService coursesPagesService)
         {
             _coursesPagesService = coursesPagesService;
-        }
+        }*/
         public PackageController(Services.Services.ICoursesService coursesService)
         {
             _coursesService = coursesService;
@@ -47,11 +47,10 @@ namespace LCMS.Web.Controllers
 
             // create a new package              
             Package crsPkg = new Package(pagesInCourse, course);
-
+            crsPkg.CloneTemplate();
 
             //IEnumerable<PagesInCourseViewModel> pagesInCourse = _coursesPagesService.GetPagesInCourse(course.Crs_Id);
             return Ok(pagesInCourse);
         }
     }
 }
-
