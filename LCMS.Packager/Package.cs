@@ -28,6 +28,11 @@ namespace LCMS.Packager
             string templateDir = workingDir + "\\CourseTemplate";
             string destDir = workingDir + "\\CrsExport";
             DirCopy(templateDir, destDir, true);
+
+            Course curCrs = this.Crs;
+
+            string crsFilesDir = destDir + "\\" + curCrs.Crs_Number;
+            Directory.CreateDirectory(crsFilesDir);
         }
 
         private void DirCopy(string templateDir, string destDir, bool copySubs)
@@ -47,7 +52,7 @@ namespace LCMS.Packager
             foreach (FileInfo file in files)
             {
                 string tempPath = Path.Combine(destDir, file.Name);
-                file.CopyTo(tempPath, false);
+                file.CopyTo(tempPath, true);
             }
 
             
