@@ -25,12 +25,17 @@ namespace LCMS.Packager
         {
             // working directory
             string workingDir = Directory.GetCurrentDirectory();
+            // template directory
             string templateDir = workingDir + "\\CourseTemplate";
+            // new directory for  course package
             string destDir = workingDir + "\\CrsExport";
+            // copy
             DirCopy(templateDir, destDir, true);
 
+            // get course number for directory
             Course curCrs = this.Crs;
 
+            // create new directories for specific course files
             string crsFilesDir = destDir + "\\" + curCrs.Crs_Number;
             Directory.CreateDirectory(crsFilesDir);
             Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01");
@@ -43,9 +48,13 @@ namespace LCMS.Packager
 
         public void CreateJSONFiles()
         {
+            // get all pages in the course
             IEnumerable<PagesInCourse> pages = this.Crs_pgs;
+            // save the course number for directory structure
             string courseNum = this.Crs.Crs_Number;
             string jsonDir = Directory.GetCurrentDirectory() + "\\CrsExport\\" + this.Crs.Crs_Number + "\\Modules\\Mod_01\\json";
+
+            // loop through all pages and create a json file for each
             int i = 0;
             foreach (var page in pages)
             {
@@ -61,7 +70,10 @@ namespace LCMS.Packager
 
         private void DirCopy(string templateDir, string destDir, bool copySubs)
         {
+            // get template directory to copy
             DirectoryInfo dir = new DirectoryInfo(templateDir);
+
+            // throw error if the directory doesn't exist
             if (!dir.Exists)
             {
                 throw new DirectoryNotFoundException(
@@ -69,9 +81,12 @@ namespace LCMS.Packager
                     + templateDir);
             }
 
+            // get all subdirs
             DirectoryInfo[] dirs = dir.GetDirectories();
+            // create a new directory for course package
             Directory.CreateDirectory(destDir);
 
+            // get all files and loop through to copy
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
@@ -79,7 +94,7 @@ namespace LCMS.Packager
                 file.CopyTo(tempPath, true);
             }
 
-            
+            // if copying subdirectories loop through each and re-call same method
             if (copySubs)
             {
                 foreach (DirectoryInfo subdir in dirs)

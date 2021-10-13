@@ -50,7 +50,6 @@ namespace LCMS.Web.Controllers
             crsPkg.CloneTemplate();
             crsPkg.CreateJSONFiles();
 
-            //IEnumerable<PagesInCourseViewModel> pagesInCourse = _coursesPagesService.GetPagesInCourse(course.Crs_Id);
             return Ok(pagesInCourse);
         }
     }
