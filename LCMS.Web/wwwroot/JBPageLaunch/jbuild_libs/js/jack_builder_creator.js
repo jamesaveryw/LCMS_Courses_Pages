@@ -1736,10 +1736,12 @@ function Lesson_Data_File(LDF) {
 							//pdf_loc = "pdf/";
 							break;
 						case "Lesson_Header_Color":
-							document.getElementById("pg_header").style.backgroundColor = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
+							// JW REMOVE FOR POC
+							//document.getElementById("pg_header").style.backgroundColor = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
 							break;
 						case "Lesson_Title_Color":
-							document.getElementById("Page_Title").style.color = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
+							// JW REMOVE FOR POC
+							//document.getElementById("Page_Title").style.color = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
 							break;
 
 						case "Lesson_Title_Text":
@@ -1766,10 +1768,12 @@ function Lesson_Data_File(LDF) {
 								break;
 							*/
 						case "Progress_Bar_Color":
-							document.getElementById("prg_Bar").style.backgroundColor = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
+							// JW REMOVE FOR POC
+							//document.getElementById("prg_Bar").style.backgroundColor = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
 							break;
 						case "Progress_Bar_Height":
-							document.getElementById("prg_Bar").style.height = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
+							// JW REMOVE FOR POC
+							//document.getElementById("prg_Bar").style.height = (LDF[0][jcc_test[ln_num]][hrData[pps]]);
 							break;
 
 						case "heroSize":
@@ -9322,6 +9326,7 @@ jQuery(function ($) {
 				Jcc_Comp_Maker = Jcc_Comp_Maker + "</div>";
 
 
+				return Jcc_Comp_Maker;
 				Component_Engine(Jcc_Comp_Maker);
 
 				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	

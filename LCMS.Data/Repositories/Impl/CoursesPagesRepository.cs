@@ -50,6 +50,7 @@ namespace LCMS.Data.Repositories.Impl
                 pagesWithOrder[i] = new PagesInCourse { 
                     Pg_Id = page.Pg_Id,
                     Pg_Title = page.Pg_Title,
+                    Pg_Content = page.Pg_Content,
                     CP_Order = record.CP_Order
                 };
                 i++;

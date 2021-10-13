@@ -74,6 +74,7 @@ namespace LCMS.Services.Factory
             return new PagesInCourse(
                 pg_id: pagesInCourseToCreate.Pg_Id,
                 pg_title: pagesInCourseToCreate.Pg_Title,
+                pg_content: pagesInCourseToCreate.Pg_Content,
                 cp_order: pagesInCourseToCreate.CP_Order
             );
         }
@@ -84,6 +85,7 @@ namespace LCMS.Services.Factory
             {
                 Pg_Id = pagesInCourseToView.Pg_Id,
                 Pg_Title = pagesInCourseToView.Pg_Title,
+                Pg_Content = pagesInCourseToView.Pg_Content,
                 CP_Order = pagesInCourseToView.CP_Order
             };
         }

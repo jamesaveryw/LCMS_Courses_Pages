@@ -99,7 +99,7 @@ function createCourse(e) {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(() => listRecords('courses', 'course-list-modal', e))
+        .then(() => listRecords('courses', 'list-courses', e))
         .then(() => document.getElementById("new-course-form").reset())
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -314,6 +314,46 @@ function deletePgFromCrs(e) {
     }
     crsPgToDelete.push(deleteObj);
 }
+
+function getPagesInCoursePackage(course) {
+    let updatedData;
+    fullURI = baseURI + 'coursespages/pages/' + course.crs_Id;
+    fetch(fullURI)
+        .then(response => response.json())
+        .then(data => {
+            updatedData = _getPageHTML(data);
+            console.log(updatedData);
+
+        })
+        .catch(error => console.error('Unable to get items.', error));
+}
+
+function _getPageHTML(data) {
+    data.forEach(item => {
+        let pgJSON = item.pg_Content;
+        let pgJSONObj = JSON.parse(pgJSON);
+        let pgHTML = Lesson_Data_File(pgJSONObj);
+        item.pg_HTML = pgHTML;
+    });
+
+    return data;
+}
+
+/*function _packageCourse(data, course) {
+    console.log(data);
+
+    fetch("Package/PackageCourse/" + course.crs_Id, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then((data) => console.log(data))
+        .catch(error => console.error('Unable to add item.', error));
+}*/
 
 
 // Page Functions
@@ -546,16 +586,27 @@ function _displayRecords(data, type, contID, e) {
             deleteButton.addEventListener('keydown', deleteRecord.bind(deleteButton, item));
             tdDelete.appendChild(deleteButton);
 
-            let tdPreview = document.createElement('td')
-            let previewButton = button.cloneNode(false);
-            let textNodePreview = document.createTextNode('Preview');
-            previewButton.appendChild(textNodePreview);
-            previewButton.classList.add('preview-' + type);
-            previewButton.addEventListener('click', previewRecord.bind(previewButton, item));
-            previewButton.addEventListener('keydown', previewRecord.bind(previewButton, item));
-            tdPreview.appendChild(previewButton);
+            let tdPreviewPackage = document.createElement('td')
+            let previewPackageButton = button.cloneNode(false);
+            let textNodePreviewPackage;
+            if (type == 'pages') {
+                textNodePreviewPackage = document.createTextNode('Preview');
+                previewPackageButton.classList.add('preview-' + type);
+                previewPackageButton.addEventListener('click', previewRecord.bind(previewPackageButton, item));
+                previewPackageButton.addEventListener('keydown', previewRecord.bind(previewPackageButton, item));
+            }
+            else if (type == 'courses') {
+                textNodePreviewPackage = document.createTextNode('Package');
+                previewPackageButton.classList.add('package-' + type);
+                previewPackageButton.addEventListener('click', getPagesInCoursePackage.bind(previewPackageButton, item));
+                previewPackageButton.addEventListener('keydown', getPagesInCoursePackage.bind(previewPackageButton, item));
+            }
 
-            tr.append(tdID, tdTitle, tdList, tdEdit, tdDelete, tdPreview);
+
+            previewPackageButton.appendChild(textNodePreviewPackage);
+            tdPreviewPackage.appendChild(previewPackageButton);
+
+            tr.append(tdID, tdTitle, tdList, tdEdit, tdDelete, tdPreviewPackage);
         }
         else if (/page-list/.test(contID)) {
 
