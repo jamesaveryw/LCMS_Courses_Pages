@@ -13,5 +13,6 @@ namespace LCMS.Data.Repositories
         CoursePage GetPageOrder(int crsId, int pgId);
         CoursePage CreateCoursePage(CoursePage createdCoursePage);
         void UpdateCoursePage(CoursePage updatedCoursePage, int courseId, int pageId);
+        void DeleteCoursePage(int crsId, int pgId);
     }
 }

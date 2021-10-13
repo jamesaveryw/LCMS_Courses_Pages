@@ -51,7 +51,7 @@
             </div>
             <div role="region" id="new-course" class="hidden section">
                 <h2>Add New Course</h2>
-                <form id="new-course-form" action="javascript:void(0);" method="POST" onsubmit="createCourse()">
+                <form id="new-course-form" action="javascript:void(0);" method="POST" onsubmit="createCourse(event); showHide('list-courses');">
 
                     <label for="course-title">Course Title</label>
                     <input type="text" id="course-title" placeholder="Course Title" />
@@ -69,7 +69,7 @@
             </div>
             <div role="region" id="new-page" class="hidden section">
                 <h2>Add New Page</h2>
-                <form id="new-page-form" action="javascript:void(0);" method="POST" onsubmit="createPage()">
+                <form id="new-page-form" action="javascript:void(0);" method="POST" onsubmit="createPage(event); showHide('list-pages');">
 
                     <label for="page-title">Page Title</label>
                     <input type="text" id="page-title" placeholder="Page Title">
@@ -84,7 +84,7 @@
             <div role="region" id="edit-course" class="hidden section">
                 <h2>Edit Course</h2>
                 <div id="courseEditForm">
-                    <form id="edit-course-form" action="javascript:void(0);" onsubmit="updateCourse()">
+                    <form id="edit-course-form" action="javascript:void(0);" onsubmit="updateCourse(event); showHide('list-courses');">
                         <p id="edit-course-id"></p>
                         <label for="edit-course-title">Course Title</label>
                         <input type="text" id="edit-course-title" placeholder="Course Title">
@@ -96,7 +96,7 @@
                         <textarea rows="50" id="edit-course-blurb" placeholder="Course Blurb"></textarea>
                         <div class="btn-cont">
                             <button type="submit">Save Course</button>
-                            <button type="reset" onkeydown="listRecords('courses', event)" onclick="listRecords('courses', event)">Cancel</button>
+                            <button type="reset" onkeydown="listRecords('courses', 'list-courses', event); showHide('list-courses');" onclick="listRecords('courses', 'list-courses', event); showHide('list-courses');">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -104,7 +104,7 @@
             <div role="region" id="edit-page" class="hidden section">
                 <h2>Edit Page</h2>
                 <div id="pageEditForm">
-                    <form id="edit-page-form" action="javascript:void(0);" onsubmit="updatePage()">
+                    <form id="edit-page-form" action="javascript:void(0);" onsubmit="updatePage(event); showHide('list-pages');">
                         <p id="edit-page-id"></p>
                         <label for="edit-page-title">Page Title</label>
                         <input type="text" id="edit-page-title">
@@ -112,7 +112,7 @@
                         <textarea rows="50" id="edit-page-content"></textarea>
                         <div class="btn-cont">
                             <button type="submit">Save Page</button>
-                            <button type="reset" onkeydown="listRecords('pages', event)" onclick="listRecords('pages', event)">Cancel</button>
+                            <button type="reset" onkeydown="listRecords('pages', 'list-pages', event); showHide('list-pages');" onclick="listRecords('pages', 'list-pages', event); showHide('list-pages');">Cancel</button>
                         </div>
                     </form>
                 </div>

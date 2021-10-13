@@ -25,20 +25,20 @@ for (let navLink of navLinks) {
     navLink.addEventListener('keydown', swapNavLinks);
 }
 
-
-
 listRecords("courses", "list-courses");
 
 // show/hide various sections
 // pass in the section that should be made active 
 // and add .hidden to previously active section
-function showHide(activeEl) {
+function showHide(activeElId) {
+    let activeEl = document.getElementById(activeElId);
     document.querySelector('.active').classList.add('hidden');
     document.querySelector('.active').classList.remove('active');
     activeEl.classList.remove('hidden');
     activeEl.classList.add('active');
 }
 
+// closes any modal/modal container with class open
 function closeModal(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         document.querySelector('.modal.open h2').innerHTML = document.querySelector('.modal.open h2').innerHTML.replace(/((?:Page|Course): ).*/, '$1');
@@ -52,28 +52,30 @@ function closeModal(e) {
     }
 }
 
+// handles the top nav links
 function swapNavLinks(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         let id = e.target.id.replace(/-link/, '');
-        showHide(document.getElementById(id));
+        showHide(id);
 
         let type;
         if (/list-courses/.test(id)) {
             type = 'courses';
 
-            listRecords(type, 'list-courses');
+            listRecords(type, 'list-courses', e);
         }
         else if (/list-pages/.test(id)) {
             type = 'pages';
 
-            listRecords(type, 'list-pages');
+            listRecords(type, 'list-pages', e);
         }
     }
 }
 
 
 // Course Functions
-function createCourse() {
+// create a new course
+function createCourse(e) {
     let fullURI = baseURI + 'courses'
     const addTitleTextbox = document.getElementById('course-title');
     const addNumTextbox = document.getElementById('course-number');
@@ -97,12 +99,14 @@ function createCourse() {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(() => listRecords('courses', 'course-list-modal'))
+        .then(() => listRecords('courses', 'course-list-modal', e))
         .then(() => document.getElementById("new-course-form").reset())
         .catch(error => console.error('Unable to add item.', error));
 }
 
-function updateCourse() {
+// update course details
+function updateCourse(e) {
+    console.log('updating course')
     let fullURI = baseURI + 'courses';
     const itemId = parseInt(document.getElementById('edit-course-id').innerText.replace(/ID: /, ''));
 
@@ -122,12 +126,11 @@ function updateCourse() {
         },
         body: JSON.stringify(item)
     })
-        .then(() => listRecords('courses', 'course-list-modal'))
+        .then(() => listRecords('courses', 'list-courses', e))
         .catch(error => console.error('Unable to update item.', error));
-
-    return false;
 }
 
+// open the page list modal for editing
 function editPagesInCourse(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         let disabledInputs = slice(document.querySelectorAll('#page-list-modal input[disabled]'));
@@ -147,50 +150,65 @@ function editPagesInCourse(e) {
     }
 }
 
+// save any changes to pages in a course
 function savePagesInCourse(e) {
-    let fullURI = baseURI + 'coursespages';
-    let trs = document.querySelectorAll('#page-list-modal-table tr');
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        
+        let fullURI = baseURI + 'coursespages';
+        let trs = document.querySelectorAll('#page-list-modal-table tr');
 
-    for (let tr of trs) {
-        let item = {
-            Crs_Id: parseInt(e.target.getAttribute('data-course-id')),
-            Pg_Id: parseInt(tr.querySelector('td:nth-child(1)').innerHTML),
-            CP_Order: parseInt(tr.querySelector('td:nth-child(3) input').value)
-        };
+        for (let tr of trs) {
+            let item = {
+                Crs_Id: parseInt(e.target.getAttribute('data-course-id')),
+                Pg_Id: parseInt(tr.querySelector('td:nth-child(1)').innerHTML),
+                CP_Order: parseInt(tr.querySelector('td:nth-child(3) input').value)
+            };
 
-        console.log(item);
+            if (tr.classList.contains('new-page')) {
+                fetch(fullURI, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(item)
+                })
+                    .then(response => response.json())
+                    .then(() => listRecords('pages', 'page-list-modal', e))
+                    .catch(error => console.error('Unable to add item.', error));
+            }
+            else {
+                fetch(`${fullURI}/update-coursepage`, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(item)
+                })
+                    .catch(error => console.error('Unable to update item.', error));
+            }
+        }
 
-        if (tr.classList.contains('new-page')) {
+        // loop through crsPgToDelete
+        for (let page of crsPgToDelete) {
+            console.log(page);
+            let crsId = page.crs_Id;
+            let pgId = page.pg_Id;
+            fullURI += '/' + crsId + '-' + pgId;
+            console.log(fullURI)
             fetch(fullURI, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(item)
+                method: 'DELETE'
             })
-                .then(response => response.json())
-                .catch(error => console.error('Unable to add item.', error));
+                .then(() => listRecords('pages', 'page-list-modal', e))
+                .catch(error => console.error('Unable to delete item.', error));
         }
-        else {
-            fetch(`${fullURI}/update-coursepage`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(item)
-            })
-                .catch(error => console.error('Unable to update item.', error));
-        }
+        // delete each record
+        cancelPagesInCourseUpdates(e);
     }
-
-    // loop through crsPgToDelete
-    // delete each record
-    // call cancelPagesInCourseUpdates to update modal, list all records, and clear crsPgToDelete
-    cancelPagesInCourseUpdates(e);
 }
 
+// cancel any updates to page list of course
 function cancelPagesInCourseUpdates(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         let disabledInputs = slice(document.querySelectorAll('#page-list-modal input:not([disabled])'));
@@ -214,6 +232,10 @@ function cancelPagesInCourseUpdates(e) {
     }
 }
 
+// adds new page to page-list-modal
+// pages added are not saved at this point
+// only saved when save changes button (calls
+// savePagesInCourse() is called)
 function addPageToCourse(e) {
     let tr = document.createElement('tr');
     tr.className = 'new-page';
@@ -253,6 +275,8 @@ function addPageToCourse(e) {
     alert(findAncestor(e.target, 'node', 'TR').querySelector('td:nth-child(2)').innerHTML + " added to course.");
 }
 
+// closes the list of possible pages to add
+// and returns to the page list modal
 function donePgAdd(e) {
     editPagesInCourse(e);
     document.getElementById('add-page-modal').classList.remove('open');
@@ -260,6 +284,7 @@ function donePgAdd(e) {
     document.getElementById('add-page-modal-table').innerHTML = '';
 }
 
+// cancels any pages added to course
 function cancelPgAdd(e) {
     let addedPgs = slice(document.querySelectorAll('#page-list-modal-table tr.new-page'));
 
@@ -272,6 +297,10 @@ function cancelPgAdd(e) {
     document.getElementById('add-page-modal-table').innerHTML = '';
 }
 
+// queues a page for deletion from a course
+// pages removed are not officially removed at
+// this point. save changes button (calls
+// savePagesInCourse() is called) must be clicked
 function deletePgFromCrs(e) {
     // remove from table
     let tr = findAncestor(e.target, 'node', 'TR');
@@ -288,7 +317,8 @@ function deletePgFromCrs(e) {
 
 
 // Page Functions
-function createPage() {
+// create new page
+function createPage(e) {
     let fullURI = baseURI + 'pages'
     const addTitleTextbox = document.getElementById('page-title');
     const addJSONTextbox = document.getElementById('page-content');
@@ -310,13 +340,14 @@ function createPage() {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(() => listRecords('pages', 'page-list-modal'))
+        .then(() => listRecords('pages', 'list-pages', e))
         .then(() => document.getElementById("new-page-form").reset())
         .catch(error => console.error('Unable to add item.', error));
 
 }
 
-function updatePage() {
+// update a page
+function updatePage(e) {
     let fullURI = baseURI + 'pages';
     const itemId = parseInt(document.getElementById('edit-page-id').innerText.replace(/ID: /, ''));
     console.log(itemId);
@@ -336,7 +367,7 @@ function updatePage() {
         },
         body: JSON.stringify(item)
     })
-        .then(() => listRecords('pages', 'page-list-modal'))
+        .then(() => listRecords('pages', 'list-pages', e))
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
@@ -344,6 +375,7 @@ function updatePage() {
 
 
 // Record Functions
+// deletes page/course record
 function deleteRecord(item, e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         let fullURI = baseURI + e.target.className.replace('delete-', '');
@@ -352,14 +384,15 @@ function deleteRecord(item, e) {
         fetch(`${fullURI}/${id}`, {
             method: 'DELETE'
         })
-            .then(() => listRecords(e.target.className.replace('delete-', '')))
+            .then(() => listRecords(e.target.className.replace('delete-', ''), 'list-' + e.target.className.replace('delete-', ''), e))
             .catch(error => console.error('Unable to delete item.', error));
     }
 }
 
+// displays the form to edit a page/course
 function displayEditForm(item, e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        showHide(document.getElementById(e.target.className));
+        showHide(e.target.className);
         let type = e.target.className.replace(/edit-/, '');
         console.log(type);
         let properties = Object.keys(item);
@@ -377,10 +410,12 @@ function displayEditForm(item, e) {
     }
 }
 
+// cancels the edit form
 function closeInput() {
     document.getElementById('editForm').style.display = 'none';
 }
 
+// previews a page
 function previewRecord(item, e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         if (e.target.className.replace(/preview-/, '') == 'pages') {
@@ -389,11 +424,10 @@ function previewRecord(item, e) {
     }
 }
 
-
-
 // Display Functions
+// get list of pages/courses
 function listRecords(type, contID, e) {
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+    if (!e || e.type === 'click' || e.type === 'submit' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         let fullURI;
 
         if (!/modal/.test(contID)) {
@@ -418,27 +452,7 @@ function listRecords(type, contID, e) {
     }
 }
 
-/*function displayList(item, e) {
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        let type = e.target.className.replace(/list-/, '') + 's';
-        let id;
-        if (type == 'courses') {
-            id = item.crs_Id;
-        }
-        else if (type == 'pages') {
-            id = item.pg_Id;
-        }
-        let fullURI = baseURI + 'coursespages/' + type;
-        fetch(`${fullURI}/${id}`)
-            .then(response => response.json())
-            .then(data => _displayListInModal(item, data, type))
-            .catch((error) => {
-                console.error('Unable to get items.', error)
-                _displayListInModal(item, null, type);
-            });
-    }
-}*/
-
+// diplay list retrieved from listRecords()
 function _displayRecords(data, type, contID, e) {
     // reset table contents
     const tBody = document.getElementById(contID + '-table');
@@ -479,6 +493,10 @@ function _displayRecords(data, type, contID, e) {
     }
     if (/add-page/.test(contID)) {
         document.getElementById('page-list-modal').classList.remove('open');
+    }
+
+    if (/page-list-modal/.test(contID)) {
+        data.sort((a, b) => (a.cP_Order > b.cP_Order) ? 1 : -1);
     }
 
     const button = document.createElement('button');
@@ -586,64 +604,8 @@ function _displayRecords(data, type, contID, e) {
     });
 }
 
-/*function _displayListInModal(srcItem, data, type) {
-    console.log(data)
-    let modal;
-    if (type === 'courses') {
-        console.log("courses")
-        modal = document.getElementById('page-list-modal');
-        document.getElementById('crs_title').innerHTML = 'Course: ' + srcItem.crs_Number;
-        document.getElementById('crs_intro').innerHTML = 'Pages in "' + srcItem.crs_Title + ':"';
-        modal.classList.add('open');
-        if (data != null) {
-            data.forEach(item => {
-                let tr = document.createElement('tr');
-                let td1 = document.createElement('td');
-                td1.innerHTML = item.pg_Id;
-                let td2 = document.createElement('td');
-                td2.innerHTML = item.pg_Title;
-                let td3 = document.createElement('td');
-                let orderInput = document.createElement('input');
-                setAttrs(orderInput, { "type": "text", "id": srcItem.crs_Id + "-" + item.pg_Id });
-                orderInput.disabled = true;
-                console.log(orderInput);
-                orderInput.value = item.cP_Order;
-                 
-                td3.appendChild(orderInput);
-                tr.append(td1, td2, td3);
-                modal.querySelector('tbody').appendChild(tr);
-            });
-        }
-    }
-    else if (type === 'pages') {
-        modal = document.getElementById('course-list-modal');
-        document.getElementById('pg_title').innerHTML = 'Page ' + srcItem.pg_Title;
-        document.getElementById('pg_intro').innerHTML = 'Courses "' + srcItem.pg_Title + '" appears in:';
-        modal.classList.add('open');
-        if (data != null) {
-            data.forEach(item => {
-                let tr = document.createElement('tr');
-                let td1 = document.createElement('td');
-                td1.innerHTML = item.crs_Id;
-                let td2 = document.createElement('td');
-                td2.innerHTML = item.crs_Title;
-                let td3 = document.createElement('td');
-                td3.innerHTML = item.crs_Number;
-                tr.append(td1, td2, td3);
-                modal.querySelector('tbody').appendChild(tr);
-            });
-        }
-    }    
 
-
-    document.getElementById('modal-container').classList.add('open');
-    modal.focus();
-}*/
-
-
-
-
-
+// Clean up JSON so it's parsable
 function cleanJSON(json) {
     json = json.replace(/\/\*(?:.|\n)*?\*\//g, ""); // remove all multiline comments
     json = json.replace(/(?<!https?:)\/\/.*?\n/g, "\n"); // remove inline comments

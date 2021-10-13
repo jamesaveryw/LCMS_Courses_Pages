@@ -95,5 +95,14 @@ namespace LCMS.Data.Repositories.Impl
 
             return;
         }
+
+        public void DeleteCoursePage(int crsId, int pgId)
+        {
+            CoursePage coursePageToDelete = _context.CoursesPages.FirstOrDefault(coursepage => coursepage.Crs_Id == crsId && coursepage.Pg_Id == pgId);
+            if (coursePageToDelete != null) _context.CoursesPages.Remove(coursePageToDelete);
+            _context.SaveChanges();
+
+            return;
+        }
     }
 }

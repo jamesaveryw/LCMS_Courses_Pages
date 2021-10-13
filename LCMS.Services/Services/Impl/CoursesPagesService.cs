@@ -60,5 +60,12 @@ namespace LCMS.Services.Services.Impl
 
             return;
         }
+
+        public void DeleteCoursePage(int crsId, int pgId)
+        {
+            _repository.DeleteCoursePage(crsId, pgId);
+
+            return;
+        }
     }
 }

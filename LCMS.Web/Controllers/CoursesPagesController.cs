@@ -66,5 +66,13 @@ namespace LCMS.Web.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{crsId}-{pgId}")]
+        public IActionResult Delete(int crsId, int pgId)
+        {
+            _coursesPagesService.DeleteCoursePage(crsId, pgId);
+
+            return NoContent();
+        }
     }
 }

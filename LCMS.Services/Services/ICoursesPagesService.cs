@@ -13,5 +13,6 @@ namespace LCMS.Services.Services
         int GetPageOrder(int crsId, int pgId);
         CoursePageViewModel CreateCoursePage(CoursePageViewModel coursePageToCreate);
         void UpdateCoursePage(CoursePageViewModel coursePageToUpdate);
+        void DeleteCoursePage(int crsId, int pgId);
     }
 }
