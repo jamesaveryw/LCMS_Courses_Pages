@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LCMS.Data\LCMS.Data.csproj" />
     <ProjectReference Include="..\LCMS.Domain\LCMS.Domain.csproj" />
+    <ProjectReference Include="..\LCMS.Packager\LCMS.Packager.csproj" />
   </ItemGroup>
 
 </Project>

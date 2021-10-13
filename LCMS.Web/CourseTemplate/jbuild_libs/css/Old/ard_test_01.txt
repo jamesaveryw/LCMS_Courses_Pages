@@ -1,0 +1,30 @@
+function accordian_comp(accData)
+{
+
+	var accordian_comp_number = (accData[0].comp_instance);
+	Order_Array.push(accData[0].Component_Order);
+	Comp_Call_Array.push(accData[0].Component_Call);	
+	
+Acrd_Main_Array[accordian_comp_number] = accData[1].Acrd_Main;	
+Acrd_Sub_Array[accordian_comp_number] = accData[1].Acrd_Selections;
+
+//Acrd_Selections	
+	
+/*	
+	Acrd_Length = accData[0].Acrd_Selections.length;
+	
+	for(var acc_set = 0; acc_set < Acrd_Length; acc_set++)
+		{
+			Acrd_Sub_Array[acc_set] = accData[0].Acrd_Selections[acc_set];
+			Acrd_UL += '<li>' + Acrd_Sub_Array[acc_set] + '</li>';
+		}
+*/	
+			//Acrd_List_Array[accordian_comp_number] = Acrd_UL;
+			//Acrd_UL = " ";
+}
+/*  toc_Array[tbl] = toc[0].HC_TOC[tbl];
+
+var Acrd_Main_Array = [];
+var Acrd_Sub_Array = [];
+var Acrd_List_Array = [];
+*/

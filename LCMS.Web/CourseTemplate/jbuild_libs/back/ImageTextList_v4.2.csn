@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<snippet name="Image/Text/List v4.2" description="">
+<insertText location="beforeSelection">
+<![CDATA[//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄	
+//╔══════════════════════════════════════════════════════════╗
+//║ -------<( Image w/Text/List Begin )>-------  11/21/2019  ║
+//╚══════════════════════════════════════════════════════════╝
+		
+{"image_w_text":
+	
+		[
+			// make sure any images are in the images folder for the module you are in.
+			{ // 0
+				"image_name":"Circular-Flow-470445589.png",
+				"image_w_text_tag":"This is a text tag",
+				"border_style":"", //solid, dashed, dotted, double, ridge, groove,
+				"border_height":"",   // "" or 0px  will have no border, add a number with px for a border
+				"border_color":"",
+			},
+				
+			{ // 1
+				"image_position":"right",// When using the Flip Card only top and bottom are avilable  left
+				// top, bottom, left, right
+				"image_aligmnent":"center",
+				// left, center, right 
+			},
+				
+
+			{"image_size":"50%"}, // 2
+				// use either percentages of pixels. For Percent "50%" - for Pixels use "50px"		
+			{ // 3
+				
+				"image_text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				
+				"image_list": // If no list is required then leave the "img_lstText" line commented out with the //. 
+							  // To enable the list remove the //	
+					[
+						// to add another list item, copy the previous lstText and paste it below the last lstText item DO NOT REMOVE THE // on this line.
+						//=================================================================================================================================
+						// If no list is required then leave the "img_lstText" line commented out with the //. 
+					    // To enable the list remove the //
+						//=================================================================================================================================
+						{"img_lstText":"List item 1"},
+						{"img_lstText":"List item 2"},
+						{"img_lstText":"List item 3"},
+						{"img_lstText":"List item 4"},
+					],
+								"list_position":"bottom", // top, bottom
+								"top_margin":"10px",
+								"Type_of_List":"ol",    //ol = is an ordered list with numbers,  ul = unordered list with bullets
+								
+								//-------------------------------------------------------------------
+								//  -------<( to customize the ul list use the folowing: )>-------
+								"ul_type":"",	// disc, circle, square, none, "" will be the default
+								//-------------------------------------------------------------------
+								
+								//-------------------------------------------------------------------
+								//  -------<( to customize the ol list use the folowing: )>-------
+								"ol_type":"",  // 1, a, A, i, I, none "" will be the default
+								//-------------------------------------------------------------------
+								
+							// In order to change the bullet or number size of the list you will need to use pixel sizes
+							// Below are the pixel sizes for each of the h1 - h6 tags. use the pixel size to change the "List_Text_Size"
+								"List_Text_Size":"jb1",    // jb1, jb2, jb3, jb4, jb5, jb6: all of these are 16px
+				
+								"list_border_style":"",  //solid, dashed, dotted, double, ridge, groove,
+								"list_border_height":"", // "" or 0px  will have no border, add a number with px for a border
+								"list_border_color":"",
+				
+				"image_text_below":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+				"image_text_below_top_margin":"10px",
+								
+
+			},
+
+			{// Use image font size jb1-jb7 for custom style, color, ect. // 4
+
+				"image_text_color":"#bf0d3f", 
+			//-------------------------------------------------------------------	
+				"image_text_style":"normal", 
+				// normal, italic, oblique
+				"image_text_variant":"normal",
+				// normal, small-caps
+				"image_text_weight":"normal", // If Image_font_style is jb2 or jb5 bold will have no effect, since these are already bold
+				// normal, bold:  font-weight: normal;
+				"image_text_top_margin":"0%", // use a percentage, This controls the text vertical placement.
+				
+				"image_text_padding":"0px",
+			},
+			
+			{
+				"image_text_alignmnet":"left",  
+				// left, center, right, justify
+				"image_font_size":"jb1",
+			},
+				
+			
+			{
+				"top_margin":"0px",   // To move the image up use a negative number: A positive number will move it down.
+				"snippet_top_margin":"10px", // Moves the entire snippet down or up
+			},
+				
+			{"background_color":""},
+				// You can use color names or #ffffff
+			{"image_radius":""}, 
+				// for a image with squared edges use 0% : for a circle use 50% for rounded edges use 10% thru 50%
+			    // If the image is a square image using 50% will make a circle, any other dimension will give an oval
+		],
+},		
+//╔══════════════════════════════════════════════════════════╗
+//║ -------<( Image w/Text/List End )>-------                ║
+//╚══════════════════════════════════════════════════════════╝				
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄	]]>
+</insertText>
+<insertText location="afterSelection"><![CDATA[]]>
+</insertText>
+</snippet>

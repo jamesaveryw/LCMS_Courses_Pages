@@ -323,7 +323,7 @@ function getPagesInCoursePackage(course) {
         .then(data => {
             updatedData = _getPageHTML(data);
             console.log(updatedData);
-
+            _packageCourse(data, course);
         })
         .catch(error => console.error('Unable to get items.', error));
 }
@@ -339,8 +339,7 @@ function _getPageHTML(data) {
     return data;
 }
 
-/*function _packageCourse(data, course) {
-    console.log(data);
+function _packageCourse(data, course) {
 
     fetch("Package/PackageCourse/" + course.crs_Id, {
         method: 'PUT',
@@ -353,7 +352,7 @@ function _getPageHTML(data) {
         .then(response => response.json())
         .then((data) => console.log(data))
         .catch(error => console.error('Unable to add item.', error));
-}*/
+}
 
 
 // Page Functions
@@ -497,7 +496,6 @@ function _displayRecords(data, type, contID, e) {
     // reset table contents
     const tBody = document.getElementById(contID + '-table');
     tBody.innerHTML = '';
-    console.log(data);
 
     // set vars based on type
     let id;
