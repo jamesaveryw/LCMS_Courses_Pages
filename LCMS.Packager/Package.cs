@@ -33,6 +33,30 @@ namespace LCMS.Packager
 
             string crsFilesDir = destDir + "\\" + curCrs.Crs_Number;
             Directory.CreateDirectory(crsFilesDir);
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01");
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\audio");
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\images");
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\json");
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\pdf");
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\transcripts");
+        }
+
+        public void CreateJSONFiles()
+        {
+            IEnumerable<PagesInCourse> pages = this.Crs_pgs;
+            string courseNum = this.Crs.Crs_Number;
+            string jsonDir = Directory.GetCurrentDirectory() + "\\CrsExport\\" + this.Crs.Crs_Number + "\\Modules\\Mod_01\\json";
+            int i = 0;
+            foreach (var page in pages)
+            {
+                string jsonFile = courseNum + "_P" + ++i + ".json";
+                string writePath = jsonDir + "\\" + jsonFile;
+                StreamWriter sw = new StreamWriter(writePath);
+                string json = page.Pg_Content;
+                sw.WriteLine(json); 
+                sw.Close();
+            }
+
         }
 
         private void DirCopy(string templateDir, string destDir, bool copySubs)

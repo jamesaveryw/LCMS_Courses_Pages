@@ -48,6 +48,7 @@ namespace LCMS.Web.Controllers
             // create a new package              
             Package crsPkg = new Package(pagesInCourse, course);
             crsPkg.CloneTemplate();
+            crsPkg.CreateJSONFiles();
 
             //IEnumerable<PagesInCourseViewModel> pagesInCourse = _coursesPagesService.GetPagesInCourse(course.Crs_Id);
             return Ok(pagesInCourse);
