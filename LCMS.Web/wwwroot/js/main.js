@@ -323,7 +323,7 @@ function getPagesInCoursePackage(course) {
         .then(data => {
             updatedData = _getPageHTML(data);
             console.log(updatedData);
-            _packageCourse(data, course);
+            _packageCourse(updatedData, course);
         })
         .catch(error => console.error('Unable to get items.', error));
 }

@@ -75,6 +75,7 @@ namespace LCMS.Services.Factory
                 pg_id: pagesInCourseToCreate.Pg_Id,
                 pg_title: pagesInCourseToCreate.Pg_Title,
                 pg_content: pagesInCourseToCreate.Pg_Content,
+                pg_html: pagesInCourseToCreate.Pg_HTML,
                 cp_order: pagesInCourseToCreate.CP_Order
             );
         }
@@ -86,6 +87,7 @@ namespace LCMS.Services.Factory
                 Pg_Id = pagesInCourseToView.Pg_Id,
                 Pg_Title = pagesInCourseToView.Pg_Title,
                 Pg_Content = pagesInCourseToView.Pg_Content,
+                Pg_HTML = pagesInCourseToView.Pg_HTML,
                 CP_Order = pagesInCourseToView.CP_Order
             };
         }

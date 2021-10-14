@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest identifier="com.scorm.golfsamples.contentpackaging.multioscosinglefile.12" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2">
+    <metadata>
+        <schema>ADL SCORM</schema>
+        <schemaversion>1.2</schemaversion>
+    </metadata>
+    <organizations default="ACS_101">
+        <organization identifier="ACS_101">
+            <title>Customer Service for Insurance Professionals</title>
+            <item identifier="p_1_item" identifierref="p_1_resource">
+                <title>Learning Objectives</title>
+            </item>
+            <item identifier="p_2_item" identifierref="p_2_resource">
+                <title>Types of Customers</title>
+            </item>
+            <item identifier="p_3_item" identifierref="p_3_resource">
+                <title>Customers' Expectations and Perceptions</title>
+            </item>
+            <item identifier="p_4_item" identifierref="p_4_resource">
+                <title>Levels of Customer Service</title>
+            </item>
+            <item identifier="p_5_item" identifierref="p_5_resource">
+                <title>Benefits and Challenges of Exceptional Customer Experience</title>
+            </item>
+        </organization>
+    </organizations>
+    <resources>
+        <resource identifier="p_1_resource" type="webcontent" adlcp:scormtype="asset" href="ACS_101/ACS_101_P1.html">
+            <file href="ACS_101/ACS_101_P1.html" />
+            <dependency identifierref="common_files" />
+        </resource>
+        <resource identifier="p_2_resource" type="webcontent" adlcp:scormtype="asset" href="ACS_101/ACS_101_P2.html">
+            <file href="ACS_101/ACS_101_P2.html" />
+            <dependency identifierref="common_files" />
+        </resource>
+        <resource identifier="p_3_resource" type="webcontent" adlcp:scormtype="asset" href="ACS_101/ACS_101_P3.html">
+            <file href="ACS_101/ACS_101_P3.html" />
+            <dependency identifierref="common_files" />
+        </resource>
+        <resource identifier="p_4_resource" type="webcontent" adlcp:scormtype="asset" href="ACS_101/ACS_101_P4.html">
+            <file href="ACS_101/ACS_101_P4.html" />
+            <dependency identifierref="common_files" />
+        </resource>
+        <resource identifier="p_5_resource" type="webcontent" adlcp:scormtype="asset" href="ACS_101/ACS_101_P5.html">
+            <file href="ACS_101/ACS_101_P5.html" />
+            <dependency identifierref="common_files" />
+        </resource>
+        <resource identifier="common_files" type="webcontent" adlcp:scormtype="asset">
+            <file href="../shared/css/bootstrap.min.css" />
+            <file href="../shared/css/font-awesome.css" />
+            <file href="../shared/css/hioc.css" />
+            <file href="../shared/js/bootstrap.min.js" />
+            <file href="../shared/js/jquery.min.js" />
+            <file href="../shared/js/jack_builder_creator.js" />
+            <file href="../shared/js/jquery.navgoco.js" />
+            <file href="../shared/js/jq_flip.js" />
+            <file href="../shared/js/patch.js" />
+        </resource>
+    </resources>
+</manifest>

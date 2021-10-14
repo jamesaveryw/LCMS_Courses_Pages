@@ -34,22 +34,48 @@ namespace LCMS.Packager
             // template directory
             string templateDir = workingDir + "\\CourseTemplate";
             // new directory for  course package
-            string destDir = workingDir + "\\CrsExport";
+            string destDir = workingDir + "\\temp";
             // copy
             DirCopy(templateDir, destDir, true);
 
-            // get course number for directory
-            Course curCrs = this.Crs;
-
             // create new directories for specific course files
-            string crsFilesDir = destDir + "\\" + curCrs.Crs_Number;
+            string crsFilesDir = destDir + "\\" + this.Crs.Crs_Number;
             Directory.CreateDirectory(crsFilesDir);
-            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01");
+            /*Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01");
             Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\audio");
             Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\images");
             Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\json");
             Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\pdf");
-            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\transcripts");
+            Directory.CreateDirectory(crsFilesDir + "\\Modules\\Mod_01\\transcripts");*/
+        }
+
+        public void CreateHTMLFiles()
+        {
+            string htmlHead = "<html lang=\"en-US\"><head><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex\"><meta name=\"google\" content=\"notranslate\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">";
+            string htmlStart = "<link rel=\"stylesheet\" href=\"../shared/css/bootstrap.min.css\"><link rel=\"stylesheet\" href=\"../shared/css/font-awesome.css\"><link rel=\"stylesheet\" href=\"../shared/css/hioc.css\"><meta id=\"viewport\" name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"></head><body class=\"notranslate\" style=\"overflow: hidden;\"><div id=\"portalContents\" tabindex=\"-1\" style=\"display: none; overflow-y: auto; top: 75px; height: 1152px; z-index: 99;\"></div><style> #lessonContent p {width: 100%;}</style><div tabindex=\"0\" id=\"JcComponents\" class=\"col-lg-12 col-md-12 col-xs-12 lsn_scrl body_style\" style=\"display: block; background-color: white; width: 100%; height: 1102px; overflow: hidden auto; padding-bottom: 100px; position: relative; top: 50px;\" align=\"center\"><div style=\"height:0px\">";
+            string htmlEnd = "</div><div class=\"col-lg-12 col-md-12 col-xs-12 panel-group\" style=\"display: block; margin-bottom:20px;\"></div><script type=\"text/javascript\" src=\"../shared/js/jquery.min.js\"></script><script type=\"text/javascript\" src=\"../shared/js/jack_builder_creator.js\"></script><script type=\"text/javascript\" src=\"../shared/js/bootstrap.min.js\"></script><script type=\"text/javascript\" src=\"jshared/js/jquery.navgoco.js\"></script><script type=\"text/javascript\" src=\"../shared/js/jq_flip.js\"></script><script type=\"text/javascript\" src=\"../shared/js/patch.js\"></script><span class=\"px-viewport-dimensions tr px-viewport-dimensions--hidden\"></span></body></html>";
+            
+            // get all pages in the course
+            IEnumerable<PagesInCourse> pages = this.Crs_pgs;
+            // save the course number for directory structure
+            string courseNum = this.Crs.Crs_Number;
+            string htmlDir = Directory.GetCurrentDirectory() + "\\temp\\" + this.Crs.Crs_Number;
+
+            // loop through all pages and create an HTML file for each
+            int i = 0;
+            foreach (var page in pages)
+            {
+                string htmlFile = courseNum + "_P" + ++i + ".html";
+                string writePath = htmlDir + "\\" + htmlFile;
+                StreamWriter sw = new StreamWriter(writePath);
+                string html = page.Pg_HTML;
+                sw.Write(htmlHead);
+                sw.Write("<title>" + page.Pg_Title + "</title>");
+                sw.Write(htmlStart);
+                sw.Write(html);
+                sw.Write(htmlEnd);
+                sw.Close();
+            }
         }
 
         public void CreateJSONFiles()
@@ -81,7 +107,7 @@ namespace LCMS.Packager
             settings.OmitXmlDeclaration = false;
             settings.Encoding = Encoding.UTF8;
 
-            using (XmlWriter xw = XmlWriter.Create(Directory.GetCurrentDirectory() + "\\imsmanifest.xml", settings))
+            using (XmlWriter xw = XmlWriter.Create(Directory.GetCurrentDirectory() + "\\temp\\imsmanifest.xml", settings))
             {
                 // start manifest
                 xw.WriteStartElement("manifest", "http://www.imsproject.org/xsd/imscp_rootv1p1p2");
@@ -107,7 +133,7 @@ namespace LCMS.Packager
 
                 // start organization
                 xw.WriteStartElement("organization");
-                xw.WriteAttributeString("default", this.Crs.Crs_Number);
+                xw.WriteAttributeString("identifier", this.Crs.Crs_Number);
                 
                 // title
                 xw.WriteElementString("title", this.Crs.Crs_Title);
@@ -149,6 +175,7 @@ namespace LCMS.Packager
                     xw.WriteAttributeString("identifierref", "common_files");
                     xw.WriteEndElement();
                     xw.WriteEndElement();
+                    i++;
                 }
 
                 // shared resources
@@ -158,35 +185,39 @@ namespace LCMS.Packager
                 xw.WriteAttributeString("adlcp", "scormtype", null, "asset");
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/css/bootstrap.min.css");
+                xw.WriteAttributeString("href", "../shared/css/bootstrap.min.css");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/css/font-awesome.css");
+                xw.WriteAttributeString("href", "../shared/css/font-awesome.css");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/css/hioc.css");
+                xw.WriteAttributeString("href", "../shared/css/hioc.css");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/js/jquery.min.js");
+                xw.WriteAttributeString("href", "../shared/js/bootstrap.min.js");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/js/jack_builder_creator.js");
+                xw.WriteAttributeString("href", "../shared/js/jquery.min.js");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/js/jquery.navgoco.js");
+                xw.WriteAttributeString("href", "../shared/js/jack_builder_creator.js");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/js/jq_flip.js");
+                xw.WriteAttributeString("href", "../shared/js/jquery.navgoco.js");
                 xw.WriteEndElement();
 
                 xw.WriteStartElement("file");
-                xw.WriteAttributeString("href", "shared/js/patch.js");
+                xw.WriteAttributeString("href", "../shared/js/jq_flip.js");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "../shared/js/patch.js");
                 xw.WriteEndElement();
 
                 xw.WriteEndElement();
