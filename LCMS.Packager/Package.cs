@@ -228,6 +228,14 @@ namespace LCMS.Packager
             }
         }
 
+        public void ZipPackage()
+        {
+            string startPath = @".\temp";
+            string zipPath = @".\output\" + this.Crs.Crs_Number + "package.zip";
+
+            System.IO.Compression.ZipFile.CreateFromDirectory(startPath, zipPath);
+        }
+
         /*public void UpdateSetupFile()
         {
             // read jcc_setup file
