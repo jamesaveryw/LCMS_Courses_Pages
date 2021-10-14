@@ -49,6 +49,8 @@ namespace LCMS.Web.Controllers
             Package crsPkg = new Package(pagesInCourse, course);
             crsPkg.CloneTemplate();
             crsPkg.CreateJSONFiles();
+            crsPkg.CreateSCOFiles();
+            //crsPkg.UpdateSetupFile();
 
             return Ok(pagesInCourse);
         }

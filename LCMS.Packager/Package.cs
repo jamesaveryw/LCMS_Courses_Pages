@@ -2,6 +2,12 @@
 using System.IO;
 using LCMS.Domain;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Newtonsoft.Json;
+using System.Xml.Linq;
+using System.Text;
+using System.Linq;
 
 namespace LCMS.Packager
 {
@@ -65,7 +71,175 @@ namespace LCMS.Packager
                 sw.WriteLine(json); 
                 sw.Close();
             }
+        }
 
+        public void CreateSCOFiles()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "    ";
+            settings.OmitXmlDeclaration = false;
+            settings.Encoding = Encoding.UTF8;
+
+            using (XmlWriter xw = XmlWriter.Create(Directory.GetCurrentDirectory() + "\\imsmanifest.xml", settings))
+            {
+                // start manifest
+                xw.WriteStartElement("manifest", "http://www.imsproject.org/xsd/imscp_rootv1p1p2");
+                xw.WriteStartAttribute("identifier");
+                xw.WriteString("com.scorm.golfsamples.contentpackaging.multioscosinglefile.12");
+                xw.WriteEndAttribute();
+                xw.WriteAttributeString("xmlns", "adlcp", null, "http://www.adlnet.org/xsd/adlcp_rootv1p2");
+                xw.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+                xw.WriteAttributeString("xsi", "schemaLocation", null, "http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd");
+                
+                // start metadata
+                xw.WriteStartElement("metadata");
+                // schema
+                xw.WriteElementString("schema", "ADL SCORM");
+                // schemaversion
+                xw.WriteElementString("schemaversion", "1.2");
+                // end metadata
+                xw.WriteEndElement();
+                
+                // start organizations
+                xw.WriteStartElement("organizations");
+                xw.WriteAttributeString("default", this.Crs.Crs_Number);
+
+                // start organization
+                xw.WriteStartElement("organization");
+                xw.WriteAttributeString("default", this.Crs.Crs_Number);
+                
+                // title
+                xw.WriteElementString("title", this.Crs.Crs_Title);
+                
+                // items
+                int i = 1;
+                foreach (PagesInCourse page in this.Crs_pgs)
+                {
+                    xw.WriteStartElement("item");
+                    xw.WriteAttributeString("identifier", "p_" + i + "_item");
+                    xw.WriteAttributeString("identifierref", "p_" + i + "_resource");
+                    xw.WriteElementString("title", page.Pg_Title);
+                    xw.WriteEndElement();
+                    i++;
+                }
+                
+                // end organization
+                xw.WriteEndElement();
+                // end organizations
+                xw.WriteEndElement();
+
+                // resources
+                xw.WriteStartElement("resources");
+                i = 1;
+                foreach (PagesInCourse page in this.Crs_pgs)
+                {
+                    // resource
+                    xw.WriteStartElement("resource");
+                    xw.WriteAttributeString("identifier", "p_" + i + "_resource");
+                    xw.WriteAttributeString("type", "webcontent");
+                    xw.WriteAttributeString("adlcp", "scormtype", null, "asset");
+                    xw.WriteAttributeString("href", this.Crs.Crs_Number + "/" + this.Crs.Crs_Number + "_P" + i + ".html");
+                    // file
+                    xw.WriteStartElement("file");
+                    xw.WriteAttributeString("href", this.Crs.Crs_Number + "/" + this.Crs.Crs_Number + "_P" + i + ".html");
+                    xw.WriteEndElement();
+                    // dependency
+                    xw.WriteStartElement("dependency");
+                    xw.WriteAttributeString("identifierref", "common_files");
+                    xw.WriteEndElement();
+                    xw.WriteEndElement();
+                }
+
+                // shared resources
+                xw.WriteStartElement("resource");
+                xw.WriteAttributeString("identifier", "common_files");
+                xw.WriteAttributeString("type", "webcontent");
+                xw.WriteAttributeString("adlcp", "scormtype", null, "asset");
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/css/bootstrap.min.css");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/css/font-awesome.css");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/css/hioc.css");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/js/jquery.min.js");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/js/jack_builder_creator.js");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/js/jquery.navgoco.js");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/js/jq_flip.js");
+                xw.WriteEndElement();
+
+                xw.WriteStartElement("file");
+                xw.WriteAttributeString("href", "shared/js/patch.js");
+                xw.WriteEndElement();
+
+                xw.WriteEndElement();
+
+                // end manifest
+                xw.WriteEndElement();
+                xw.Flush();
+            }
+        }
+
+        public void UpdateSetupFile()
+        {
+            // read jcc_setup file
+            string setupFile = Directory.GetCurrentDirectory() + "\\CrsExport\\includes\\scripts\\json\\jcc_setup.js";
+            string json = File.ReadAllText(setupFile);
+
+            // array of regex to clean up the file contents
+            string rmvLineCommentsPtrn = @"(?<!https?:)\/\/.*?\n";
+            string rmvEndSemiPtrn = @"};";
+            string rmvVarNamePtrn = @"var course_settings = ";
+
+            string[] jsonFixes =
+            {
+                @"\/\*(?:.|\n)*?\*\/",
+                @"\s*\t*\n\s*\t*"
+            };
+
+            json = Regex.Replace(json, rmvLineCommentsPtrn, "\n");
+            json = Regex.Replace(json, rmvEndSemiPtrn, "}");
+            json = Regex.Replace(json, rmvVarNamePtrn, "");
+            // all regex replacements that replace empty
+            for (int i = 0; i < 2; i++)
+            {
+                json = Regex.Replace(json, jsonFixes[i], "");
+            }
+
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            jsonObj.Portal_Setup.Course_Type = this.Crs.Crs_Type;
+            jsonObj.Portal_Setup.Course_Number = this.Crs.Crs_Number;
+            jsonObj.Portal_Setup.Course_Folder = this.Crs.Crs_Number;
+            jsonObj.Portal_Setup.Course_Name = this.Crs.Crs_Title;
+            jsonObj.Portal_Setup.Course_Title = this.Crs.Crs_Title;
+            jsonObj.Portal_Setup.Welcome_text.shortcourse = this.Crs.Crs_Blurb;
+            using StreamWriter file = File.CreateText(setupFile);
+
+
+            using (JsonWriter writer = new JsonTextWriter(file))
+            {
+                file.Write("var course_settings = ");
+                //writer.Formatting = Formatting.Indented;
+                jsonObj.WriteTo(writer);
+                file.Write(";");
+            }
         }
 
         private void DirCopy(string templateDir, string destDir, bool copySubs)

@@ -351,7 +351,7 @@ function _packageCourse(data, course) {
     })
         .then(response => response.json())
         .then((data) => console.log(data))
-        .catch(error => console.error('Unable to add item.', error));
+        .catch(error => console.error('Unable to package item.', error));
 }
 
 
