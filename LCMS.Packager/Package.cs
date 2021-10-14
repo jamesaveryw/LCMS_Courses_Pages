@@ -78,7 +78,7 @@ namespace LCMS.Packager
             }
         }
 
-        public void CreateJSONFiles()
+        /*public void CreateJSONFiles()
         {
             // get all pages in the course
             IEnumerable<PagesInCourse> pages = this.Crs_pgs;
@@ -97,7 +97,7 @@ namespace LCMS.Packager
                 sw.WriteLine(json); 
                 sw.Close();
             }
-        }
+        }*/
 
         public void CreateSCOFiles()
         {
@@ -228,7 +228,7 @@ namespace LCMS.Packager
             }
         }
 
-        public void UpdateSetupFile()
+        /*public void UpdateSetupFile()
         {
             // read jcc_setup file
             string setupFile = Directory.GetCurrentDirectory() + "\\CrsExport\\includes\\scripts\\json\\jcc_setup.js";
@@ -271,7 +271,7 @@ namespace LCMS.Packager
                 jsonObj.WriteTo(writer);
                 file.Write(";");
             }
-        }
+        }*/
 
         private void DirCopy(string templateDir, string destDir, bool copySubs)
         {
