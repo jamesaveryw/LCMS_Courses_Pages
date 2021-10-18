@@ -9,7 +9,7 @@ namespace LCMS.Services.Services
     {
         IEnumerable<PageViewModel> GetPagesNotInCourse(int courseId);
         IEnumerable<PagesInCourseViewModel> GetPagesInCourse(int coursePageId);
-        IEnumerable<CourseViewModel> GetCoursesPageIn(int coursePageId);
+        IEnumerable<CourseViewModel> GetCoursesPageIn(int pageId);
         int GetPageOrder(int crsId, int pgId);
         CoursePageViewModel CreateCoursePage(CoursePageViewModel coursePageToCreate);
         void UpdateCoursePage(CoursePageViewModel coursePageToUpdate);

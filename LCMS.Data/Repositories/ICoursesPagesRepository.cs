@@ -8,9 +8,7 @@ namespace LCMS.Data.Repositories
     public interface ICoursesPagesRepository
     {
         IEnumerable<CoursePage> GetCoursePages(int courseId);
-        IEnumerable<Page> GetPagesNotInCourse(int courseId);
-        IEnumerable<PagesInCourse> GetPagesInCourse(int coursePageId);
-        IEnumerable<Course> GetCoursesPageIn(int coursePageId);
+        IEnumerable<CoursePage> GetCoursesPageIn(int coursePageId);
         CoursePage GetPageOrder(int crsId, int pgId);
         CoursePage CreateCoursePage(CoursePage createdCoursePage);
         void UpdateCoursePage(CoursePage updatedCoursePage, int courseId, int pageId);

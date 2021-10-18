@@ -24,58 +24,15 @@ namespace LCMS.Data.Repositories.Impl
 
             return coursepages;
         }
-        public IEnumerable<Page> GetPagesNotInCourse(int courseId)
+
+        public IEnumerable<CoursePage> GetCoursesPageIn(int pageId)
         {
-
-            IEnumerable<Page> pages = (from page in _context.Pages
-                where !_context.CoursesPages.Any(cp => cp.Pg_Id == page.Pg_Id && cp.Crs_Id == courseId)
-                select new Page
-                {
-                    Pg_Id = page.Pg_Id,
-                    Pg_Title = page.Pg_Title,
-                    Pg_Content = page.Pg_Content
-                }).ToList();
-
-            return pages;
-        }
-
-        public IEnumerable<PagesInCourse> GetPagesInCourse(int coursePageId)
-        {
-            // get list of all pages in course
-            IEnumerable<Page> pages = _context.CoursesPages
-                .Where(cp => cp.Crs_Id == coursePageId)
-                .Select(cp => cp.Page)
+            IEnumerable<CoursePage> coursespages = _context.CoursesPages
+                .Where(cp => cp.Pg_Id == pageId)
+                .Select(cp => cp)
                 .ToList();
 
-            int length = pages.Count();
-
-            // set up pagesincourse array
-            PagesInCourse[] pagesWithOrder = new PagesInCourse[length];
-            int i = 0;
-            foreach (var page in pages)
-            {
-                // Page info along with order number
-                CoursePage record = _context.CoursesPages.FirstOrDefault(cp => cp.Pg_Id == page.Pg_Id);
-                pagesWithOrder[i] = new PagesInCourse { 
-                    Pg_Id = page.Pg_Id,
-                    Pg_Title = page.Pg_Title,
-                    Pg_Content = page.Pg_Content,
-                    CP_Order = record.CP_Order
-                };
-                i++;
-            }
-
-            return pagesWithOrder;
-        }
-
-        public IEnumerable<Course> GetCoursesPageIn(int coursePageId)
-        {
-            IEnumerable<Course> courses = _context.CoursesPages
-                .Where(cp => cp.Pg_Id == coursePageId)
-                .Select(cp => cp.Course)
-                .ToList();
-
-            return courses;
+            return coursespages;
         }
 
         public CoursePage GetPageOrder(int crsId, int pgId)
