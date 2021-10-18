@@ -15,6 +15,15 @@ namespace LCMS.Data.Repositories.Impl
             _context = context;
         }
 
+        public IEnumerable<CoursePage> GetCoursePages(int courseId)
+        {
+            IEnumerable<CoursePage> coursepages = _context.CoursesPages
+                .Where(cp => cp.Crs_Id == courseId)
+                .Select(cp => cp)
+                .ToList();
+
+            return coursepages;
+        }
         public IEnumerable<Page> GetPagesNotInCourse(int courseId)
         {
 
