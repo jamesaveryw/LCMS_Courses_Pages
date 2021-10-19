@@ -665,5 +665,16 @@ function cleanJSON(json) {
     json = json.replace(/(?<!")question_answers\s*:/g, '"question_answers":'); // question_answers never has quotes around it
     json = json.replace(/(?<!")Video_Files_New\s*:/g, '"Video_Files_New":'); // question_answers never has quotes around it
 
+    let pageKeyTerms = findPageKeyTerms(json);
+
     return json;
+}
+
+function findPageKeyTerms(pgJson) {
+    let pageKeyTerms = [];
+
+    let ktRE = /<span class='keyterm' tabindex='0' role='button'>(.*?)<\/span>/g;
+    let ktMatches = [...pgJson.matchAll(ktRE)];
+
+    return ktMatches.map(m => m[1]);
 }

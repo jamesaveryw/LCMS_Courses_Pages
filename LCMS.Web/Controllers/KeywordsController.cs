@@ -9,7 +9,7 @@ using LCMS.Services.ViewModels;
 namespace LCMS.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controler]")]
+    [Route("api/[Controller]")]
     public class KeywordsController : ControllerBase
     {
     private readonly IKeywordsService _keywordsService;
