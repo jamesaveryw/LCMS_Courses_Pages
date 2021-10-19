@@ -20,5 +20,6 @@ namespace LCMS.Domain
         [Key]
         public int Kw_Id { get; set; }
         public string Kw_Word { get; set; }
+        public List<PageKeyword> Kw_PagesKeywords { get; set; }
     }
 }

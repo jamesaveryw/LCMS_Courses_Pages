@@ -56,7 +56,7 @@ namespace LCMS.Services.Services.Impl
             // get all coursespages records that have course ID
             IEnumerable<CoursePage> coursePagesReturned = _coursesPagesRepo.GetCoursePages(courseId);
 
-            // select all pages that don't exist in the coursesPagesReturned
+            // select all pages that exist in the coursesPagesReturned
             IEnumerable<Page> pagesInCourse = (from page in pagesReturned
                                                   where coursePagesReturned.Any(cp => cp.Pg_Id == page.Pg_Id)
                                                   select page).ToList();

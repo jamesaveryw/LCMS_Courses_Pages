@@ -12,11 +12,11 @@ namespace LCMS.Web.Controllers
     [Route("api/[controler]")]
     public class KeywordsController : ControllerBase
     {
-    private readonly IKeywordsSerivce _keywordsService;
+    private readonly IKeywordsService _keywordsService;
 
-        public KeywordsController(IKeywordsService keywordsSerive)
+        public KeywordsController(IKeywordsService keywordsService)
         {
-            _keywordsService = _keywordsService;
+            _keywordsService = keywordsService;
         }
 
         [HttpGet]

@@ -14,8 +14,7 @@ namespace LCMS.Services.Factory
             {
                 Pg_Id = pageToView.Pg_Id,
                 Pg_Title = pageToView.Pg_Title,
-                Pg_Content = pageToView.Pg_Content//,
-                //Pg_Courses = (HashSet<Course>)pageToView.Pg_Courses
+                Pg_Content = pageToView.Pg_Content
             };
         }
 
@@ -35,8 +34,7 @@ namespace LCMS.Services.Factory
                 Crs_Title = courseToView.Crs_Title,
                 Crs_Number = courseToView.Crs_Number,
                 Crs_Type = courseToView.Crs_Type,
-                Crs_Blurb = courseToView.Crs_Blurb//,
-                //Crs_Pages = (HashSet<Page>)courseToView.Crs_Pages
+                Crs_Blurb = courseToView.Crs_Blurb
             };
         }
 
@@ -106,6 +104,23 @@ namespace LCMS.Services.Factory
                 Pg_HTML = pagesInCourseToView.Pg_HTML,
                 CP_Order = pagesInCourseToView.CP_Order
             };
+        }
+
+        public static PageKeywordViewModel CreateViewModel(PageKeyword pageKeywordToView)
+        {
+            return new PageKeywordViewModel()
+            {
+                Pg_Id = pageKeywordToView.Pg_Id,
+                Kw_Id = pageKeywordToView.Kw_Id
+            };
+        }
+
+        public static PageKeyword CreateDomainModel(PageKeywordViewModel pageKeywordToCreate)
+        {
+            return new PageKeyword(
+                pg_id: pageKeywordToCreate.Pg_Id,
+                kw_id: pageKeywordToCreate.Kw_Id
+            );
         }
 
     }

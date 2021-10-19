@@ -37,10 +37,12 @@ namespace LCMS.Web
             services.AddScoped<ICoursesRepository, CoursesRepository>();
             services.AddScoped<IKeywordsRepository, KeywordsRepository>();
             services.AddScoped<ICoursesPagesRepository, CoursesPagesRepository>();
+            services.AddScoped<IPagesKeywordsRepository, PagesKeywordsRepository>();
             services.AddScoped<IPagesService,PagesService>();
             services.AddScoped<ICoursesService, CoursesService>();
             services.AddScoped<IKeywordsService, KeywordsService>();
             services.AddScoped<ICoursesPagesService, CoursesPagesService>();
+            services.AddScoped<IPagesKeywordsService, PagesKeywordsService>();
             services.AddControllers();
         }
 
