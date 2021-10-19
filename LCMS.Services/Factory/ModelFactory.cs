@@ -50,6 +50,22 @@ namespace LCMS.Services.Factory
             );
         }
 
+        public static KeywordViewModel CreateViewModel(Keyword keywordToView)
+        {
+            return new KeywordViewModel()
+            {
+                Kw_Id = keywordToView.Kw_Id,
+                Kw_Word = keywordToView.Kw_Word
+            };
+        }
+
+        public static Keyword CreateDomainModel(KeywordViewModel keywordToCreate)
+        {
+            return new Keyword(
+                word: keywordToCreate.Kw_Word
+            );
+        }
+
         public static CoursePageViewModel CreateViewModel(CoursePage coursePageToView)
         {
             return new CoursePageViewModel()
