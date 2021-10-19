@@ -665,16 +665,39 @@ function cleanJSON(json) {
     json = json.replace(/(?<!")question_answers\s*:/g, '"question_answers":'); // question_answers never has quotes around it
     json = json.replace(/(?<!")Video_Files_New\s*:/g, '"Video_Files_New":'); // question_answers never has quotes around it
 
-    let pageKeyTerms = findPageKeyTerms(json);
+    let pageKeyTerms = _findPageKeyTerms(json);
+    json = _addTermsToPgSetup(json, pageKeyTerms);
 
     return json;
 }
 
-function findPageKeyTerms(pgJson) {
+function _findPageKeyTerms(pgJson) {
     let pageKeyTerms = [];
 
     let ktRE = /<span class='keyterm' tabindex='0' role='button'>(.*?)<\/span>/g;
     let ktMatches = [...pgJson.matchAll(ktRE)];
 
     return ktMatches.map(m => m[1]);
+}
+
+function _addTermsToPgSetup(json, terms) {
+    let jsonObj = JSON.parse(json);
+    let jsonTerms = [];
+
+    if (jsonObj[0].Page_Setup.keywords) {
+        jsonTerms = jsonObj[0].Page_Setup.keywords;
+        for (let term of terms) {
+            let termExists = false;
+            for (let jsonTerm of jsonTerms) {
+                if (term.toLowerCase().trim() == jsonTerm.toLowerCase().trim()) termExists = true;
+            }
+
+            if (!termExists) jsonObj[0].Page_Setup.keywords.push(term);
+        }
+    }
+    else {
+        jsonObj[0].Page_Setup.keywords = terms;
+    }
+
+    return JSON.stringify(jsonObj);
 }

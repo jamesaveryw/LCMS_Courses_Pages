@@ -1692,7 +1692,7 @@ function Source_Line_Modal(lnSource) {
 
 
 function Lesson_Data_File(LDF) {
-
+	console.log(("Inside Lesson data File"))
 	Q_count = 0;
 	jcc_test = Object.keys(LDF[0]); // Lesson_Data_File main Keys:
 	hrData = Object.keys(LDF[0][jcc_test[0]]); // Page_Setup
@@ -9326,7 +9326,7 @@ jQuery(function ($) {
 				Jcc_Comp_Maker = Jcc_Comp_Maker + "</div>";
 
 
-				return Jcc_Comp_Maker;
+				//return Jcc_Comp_Maker;
 				Component_Engine(Jcc_Comp_Maker);
 
 				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
