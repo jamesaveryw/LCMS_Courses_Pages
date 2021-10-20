@@ -69,10 +69,18 @@
             </div>
             <div role="region" id="new-page" class="hidden section">
                 <h2>Add New Page</h2>
-                <form id="new-page-form" action="javascript:void(0);" method="POST" onsubmit="createPage(event); showHide('list-pages');">
-
+                <form id="upload-new-page" enctype="multipart/form-data" action="javascript:void(0);" method="POST" onsubmit="readJsonFile(this, event);">
+                    <label for="page-file">Select a file to upload</label>
+                    <input type="file" id="fileupload" name="fileupload">
+                    <button type="submit">Upload file</button>
+                </form>
+                <form class="hidden" id="new-page-form" action="javascript:void(0);" method="POST" onsubmit="createPage(event); showHide('list-pages');">
                     <label for="page-title">Page Title</label>
                     <input type="text" id="page-title" placeholder="Page Title">
+                    <label for="page-title">Tags</label>
+                    <div id="page-keyword-list">
+                        <input type="text" id="page-keywords" placeholder="">
+                    </div>
                     <label for="page-content">Page JSON</label>
                     <textarea rows="50" id="page-content" placeholder="Page JSON"></textarea>
                     <div class="btn-cont">
@@ -108,6 +116,10 @@
                         <p id="edit-page-id"></p>
                         <label for="edit-page-title">Page Title</label>
                         <input type="text" id="edit-page-title">
+                        <label for="page-title">Tags</label>
+                        <div id="page-keyword-list">
+                            <input type="text" id="page-keywords" placeholder="">
+                        </div>
                         <label for="edit-page-content">Page JSON</label>
                         <textarea rows="50" id="edit-page-content"></textarea>
                         <div class="btn-cont">

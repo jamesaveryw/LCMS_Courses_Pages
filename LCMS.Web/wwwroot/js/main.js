@@ -14,10 +14,10 @@
 });
 
 const baseURI = 'api/';
-var pages = { };
-var courses = { };
-var crsPgToDelete = [ ];
-var crsPgToAdd = [ ];
+var pages = {};
+var courses = {};
+var crsPgToDelete = [];
+var crsPgToAdd = [];
 
 let navLinks = slice(document.querySelectorAll('nav-link'));
 for (let navLink of navLinks) {
@@ -153,7 +153,7 @@ function editPagesInCourse(e) {
 // save any changes to pages in a course
 function savePagesInCourse(e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        
+
         let fullURI = baseURI + 'coursespages';
         let trs = document.querySelectorAll('#page-list-modal-table tr');
 
@@ -228,7 +228,7 @@ function cancelPagesInCourseUpdates(e) {
 
         listRecords("pages", "page-list-modal", e);
 
-        crsPgToDelete = [ ];
+        crsPgToDelete = [];
     }
 }
 
@@ -356,6 +356,60 @@ function _packageCourse(data, course) {
 
 
 // Page Functions
+function readJsonFile(form, e) {
+    let fullURI = baseURI + 'pages/upload';
+    let formData = new FormData();
+    formData.append("file", fileupload.files[0]);
+    console.log(form);
+    fetch(fullURI, {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => _parseFileInfo(data));
+}
+
+function _parseFileInfo(data) {
+    let jsonObj = JSON.parse(cleanJSON(data.json));
+    let snippetContent = jsonObj[0].JBuilder_Content;
+    let keywords = jsonObj[0].Page_Setup.keywords;
+    let pgTitle;
+
+    for (let snippet of snippetContent) {
+        // get snippet type
+        let key = Object.keys(snippet)[0];
+        if (key == "Heading") {
+            pgTitle = snippet.Heading[0].sngl_Heading;
+            break;
+        }
+    }
+
+    autoFillCreatePage(pgTitle, keywords, jsonObj)
+}
+
+function autoFillCreatePage(pgTitle, keywords, jsonObj) {
+    document.getElementById('new-page-form').classList.remove('hidden');
+    document.getElementById('upload-new-page').classList.add('hidden');
+    document.getElementById('page-title').value = pgTitle;
+    document.getElementById('page-content').value = JSON.stringify(jsonObj);
+
+    let tagDiv = document.getElementById('page-keyword-list');
+    let kwDelBtn = document.createElement('button');
+    setAttrs(kwDelBtn, { 'type': 'button', 'aria-label': 'Remove tag' });
+    let delTxtNode = document.createTextNode('x');
+    kwDelBtn.append(delTxtNode);
+    for (let keyword of keywords) {
+        let kwCont = document.createElement('span');
+        let kwSpan = document.createElement('span');
+        let kwTextNode = document.createTextNode(keyword);
+        kwCont.classList.add('tag');
+        let delBtn = kwDelBtn.cloneNode(true);
+        kwSpan.appendChild(kwTextNode);
+        kwCont.append(kwSpan, delBtn);
+        tagDiv.prepend(kwCont);
+    }
+}
+
 // create new page
 function createPage(e) {
     let fullURI = baseURI + 'pages';
@@ -711,8 +765,8 @@ function _displayRecords(data, type, contID, e) {
 
 // Clean up JSON so it's parsable
 function cleanJSON(json) {
-    json = json.replace(/\/\*(?:.|\n)*?\*\//g, ""); // remove all multiline comments
-    json = json.replace(/(?<!https?:)\/\/.*?\n/g, "\n"); // remove inline comments
+    json = json.replace(/\/\*(?:.|\n|\r)*?\*\//g, ""); // remove all multiline comments
+    json = json.replace(/(?<!https?:)\/\/.*?(?:\n|\r)/g, "\n"); // remove inline comments
     json = json.replace(/\s*\n\s*/g, ""); // remove linebreaks and extra spacing
     json = json.replace(/,\s*(\}|\])/g, '$1'); // remove trailing commas
     json = json.replace(/^Lesson_Data_File\(/, ""); // remove function call
