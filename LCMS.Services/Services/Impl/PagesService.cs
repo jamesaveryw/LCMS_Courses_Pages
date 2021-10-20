@@ -35,17 +35,17 @@ namespace LCMS.Services.Services.Impl
         public PageViewModel CreatePage(PageViewModel pageToCreate)
         {
             Page newPage = ModelFactory.CreateDomainModel(pageToCreate);
-            _repository.CreatePage(newPage);
+            PageViewModel createdPage = ModelFactory.CreateViewModel(_repository.CreatePage(newPage));
 
-            return pageToCreate;
+            return createdPage;
         }
 
-        public void UpdatePage(PageViewModel pageToUpdate)
+        public PageViewModel UpdatePage(PageViewModel pageToUpdate)
         {
             Page updatedPage = ModelFactory.CreateDomainModel(pageToUpdate);
-            _repository.UpdatePage(updatedPage, pageToUpdate.Pg_Id);
+            PageViewModel updatedPageView = ModelFactory.CreateViewModel(_repository.UpdatePage(updatedPage, pageToUpdate.Pg_Id));
 
-            return;
+            return updatedPageView;
         }
 
         public void DeletePage(int pageId)

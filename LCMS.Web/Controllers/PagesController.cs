@@ -46,9 +46,9 @@ namespace LCMS.Web.Controllers
         [HttpPut("update-page")]
         public IActionResult Update(PageViewModel pageForm)
         {
-            _pagesService.UpdatePage(pageForm);
+            PageViewModel updatedPage = _pagesService.UpdatePage(pageForm);
 
-            return NoContent();
+            return Ok(updatedPage);
         }
 
         [HttpDelete("{id}")]

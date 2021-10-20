@@ -42,9 +42,9 @@ namespace LCMS.Services.Services.Impl
         public KeywordViewModel CreateKeyword(KeywordViewModel keywordToCreate)
         {
             Keyword newKeyword = ModelFactory.CreateDomainModel(keywordToCreate);
-            _repository.CreateKeyword(newKeyword);
+            KeywordViewModel createdKeyword = ModelFactory.CreateViewModel(_repository.CreateKeyword(newKeyword));
 
-            return keywordToCreate;
+            return createdKeyword;
         }
 
         public void DeleteKeyword(int kwId)

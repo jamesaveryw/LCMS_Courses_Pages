@@ -38,8 +38,15 @@ namespace LCMS.Data.Repositories.Impl
 
         public Keyword CreateKeyword(Keyword createdKeyword)
         {
-            _context.Keywords.Add(createdKeyword);
-            _context.SaveChanges();
+            if (_context.Keywords.FirstOrDefault(kw => kw.Kw_Word.ToLower() == createdKeyword.Kw_Word.ToLower()) == null)
+            {
+                _context.Keywords.Add(createdKeyword);
+                _context.SaveChanges();
+            }
+            else
+            {
+                Console.Write("keyword already exists");
+            }
 
             return createdKeyword;
         }

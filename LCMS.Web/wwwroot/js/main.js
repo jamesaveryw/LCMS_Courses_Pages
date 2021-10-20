@@ -358,7 +358,7 @@ function _packageCourse(data, course) {
 // Page Functions
 // create new page
 function createPage(e) {
-    let fullURI = baseURI + 'pages'
+    let fullURI = baseURI + 'pages';
     const addTitleTextbox = document.getElementById('page-title');
     const addJSONTextbox = document.getElementById('page-content');
 
@@ -379,6 +379,7 @@ function createPage(e) {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
+        .then(data => _saveKeywords(data))
         .then(() => listRecords('pages', 'list-pages', e))
         .then(() => document.getElementById("new-page-form").reset())
         .catch(error => console.error('Unable to add item.', error));
@@ -406,12 +407,66 @@ function updatePage(e) {
         },
         body: JSON.stringify(item)
     })
+        .then(response => response.json())
+        .then(data => _saveKeywords(data))
         .then(() => listRecords('pages', 'list-pages', e))
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
 }
 
+
+// Keyword Functions
+function createKeyword(keyword, pageId) {
+    let fullURI = baseURI + 'keywords';
+
+    fetch(fullURI, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(keyword)
+    })
+        .then(response => response.json())
+        .then(data => _saveKeywordToPage(data, pageId))
+        .catch(error => console.error('Unable to add keyword.', error));
+}
+
+// save keywords in newly added page
+function _saveKeywords(data) {
+    let pageId = data.pg_Id;
+    let pageJSON = JSON.parse(data.pg_Content);
+    let keywords = pageJSON[0].Page_Setup.keywords;
+
+    for (let keyword of keywords) {
+        const item = {
+            Kw_Id: 0,
+            Kw_Word: keyword
+        }
+
+        createKeyword(item, pageId);
+    }
+}
+
+function _saveKeywordToPage(data, pageId) {
+    let fullURI = baseURI + "pageskeywords";
+
+    const item = {
+        Pg_Id: pageId,
+        Kw_Id: data.kw_Id
+    }
+
+    fetch(fullURI, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+    })
+        .catch(error => console.error('Unable to add keyword to page.', error));
+}
 
 // Record Functions
 // deletes page/course record

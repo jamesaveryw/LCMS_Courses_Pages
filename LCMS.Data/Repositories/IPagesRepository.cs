@@ -10,7 +10,7 @@ namespace LCMS.Data.Repositories
         IEnumerable<Page> GetPages();
         Page GetPage(int pageId);
         Page CreatePage(Page createdPage);
-        void UpdatePage(Page updatedPage, int pageId);
+        Page UpdatePage(Page updatedPage, int pageId);
         void DeletePage(int pageId);
     }
 }

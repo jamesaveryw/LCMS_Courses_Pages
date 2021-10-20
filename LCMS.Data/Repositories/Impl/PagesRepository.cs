@@ -37,7 +37,7 @@ namespace LCMS.Data.Repositories.Impl
             return createdPage;
         }
 
-        public void UpdatePage(Page updatedPage, int pageId)
+        public Page UpdatePage(Page updatedPage, int pageId)
         {
             Page deletedPage = _context.Pages.FirstOrDefault(page => page.Pg_Id == pageId);
             if (deletedPage != null) _context.Pages.Remove(deletedPage);
@@ -45,7 +45,7 @@ namespace LCMS.Data.Repositories.Impl
             _context.Pages.Add(updatedPage);
             _context.SaveChanges();
 
-            return;
+            return updatedPage;
         }
 
         public void DeletePage(int pageId)

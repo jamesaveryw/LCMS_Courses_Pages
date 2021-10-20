@@ -10,7 +10,7 @@ namespace LCMS.Services.Services
         IEnumerable<PageViewModel> GetPages();
         PageViewModel GetPage(int pageId);
         PageViewModel CreatePage(PageViewModel pageToCreate);
-        void UpdatePage(PageViewModel pageToUpdate);
+        PageViewModel UpdatePage(PageViewModel pageToUpdate);
         void DeletePage(int pageId);
     }
 }
