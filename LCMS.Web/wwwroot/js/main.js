@@ -439,7 +439,7 @@ function createPage(e) {
         .then(data => _saveKeywords(data, keywords))
         .then(() => {
             listRecords('pages', 'list-pages', e);
-            clearPageForm();
+            clearPageForm(e);
         })
         .catch(error => console.error('Unable to add page.', error));
 
@@ -450,7 +450,7 @@ function updatePage(e) {
     let fullURI = baseURI + 'pages';
     const itemId = parseInt(document.getElementById('edit-page-id').innerText.replace(/ID: /, ''));
     const pageJSON = cleanJSON(document.getElementById('edit-page-content').value.trim());
-    const keywordBlocks = slice(document.getElementById('#edit-page-keyword-list .keyword'));
+    const keywordBlocks = slice(document.querySelectorAll('#edit-page-keyword-list .keyword'));
     let keywords = [];
     for (let keywordBlock of keywordBlocks) {
         keywords.push(keywordBlock.innerHTML);
@@ -471,24 +471,32 @@ function updatePage(e) {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(data => _saveKeywords(data, keywords))
-        .then(() => listRecords('pages', 'list-pages', e))
+        .then(data => getKeywordsInPage(data, keywords))
+        .then(() => {
+            listRecords('pages', 'list-pages', e);
+            clearPageForm(e);
+        })
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
 }
 
 function clearPageForm(e) {
-    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
-        document.getElementById("new-page-form").reset();
-        let keywordBlocks = slice(document.querySelectorAll("#page-keyword-list .tag"));
+    console.log(e)
+    if (e.type === 'click' || e.type === 'submit' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        let form = (e.target.tagName === 'FORM') ? e.target : findAncestor(e.target, 'node', 'FORM');
+        form.reset();
+        let keywordBlocks = slice(form.querySelectorAll(".tag"));
         for (let keywordBlock of keywordBlocks) {
             keywordBlock.remove();
         }
+
+        if (/new/.test.form.id) {
+            // hide upload and show new page form
+            document.getElementById('new-page-form').classList.add('hidden');
+            document.getElementById('upload-new-page').classList.remove('hidden');
+        }
     }
-    // hide upload and show new page form
-    document.getElementById('new-page-form').classList.add('hidden');
-    document.getElementById('upload-new-page').classList.remove('hidden');
 }
 
 
@@ -507,6 +515,25 @@ function createKeyword(keyword, pageId) {
         .then(response => response.json())
         .then(data => _saveKeywordToPage(data, pageId))
         .catch(error => console.error('Unable to add keyword.', error));
+}
+
+function getKeywordsInPage(item, keywordsUpdate) {
+    let fullURI = baseURI + 'pageskeywords/keywords/' + item.pg_Id;
+    fetch(fullURI)
+        .then(response => response.json())
+        .then(data => {
+            if (keywordsUpdate == null) {
+                data.forEach(item => {
+                    // send term to create kw block
+                    createKeywordBlock(item.kw_Word, 'edit');
+                });
+            }
+            else {
+                _updatePageKeywords(data, keywordsUpdate, item);
+            }
+            
+        })
+        .catch(error => console.error('Unable to get keywords.', error));
 }
 
 // save keywords in newly added page
@@ -541,6 +568,38 @@ function _saveKeywordToPage(data, pageId) {
         body: JSON.stringify(item)
     })
         .catch(error => console.error('Unable to add keyword to page.', error));
+}
+
+function _deleteKeywordFromPage(pgId, kwId) {
+    let fullURI = baseURI + "pageskeywords/"
+    fetch(`${fullURI}${pgId}-${kwId}`, {
+        method: 'DELETE'
+    })
+        .catch(error => console.error('Unable to delete keyword.', error));
+}
+
+function _updatePageKeywords(keywords, keywordsUpdate, page) {
+
+    // cycle through existing keywords in page
+    for (let keyword of keywords) {
+        // if the keyword exists in the list of updated keywords,
+        // then the record already exists. remove from the array.
+        if (keywordsUpdate.findIndex(item => keyword.kw_Word.toLowerCase() === item.toLowerCase()) > -1) {
+            let index = keywordsUpdate.findIndex(item => keyword.kw_Word.toLowerCase() === item.toLowerCase());
+            keywordsUpdate.splice(index, 1);
+        }
+        // if the keyword doesn't exist in the list of updated
+        // keywords, then the keyword was removed from the page.
+        // remove from the database.
+        else {
+            // call remove keyword from DB function (pgId, kwId)
+            _deleteKeywordFromPage(page.pg_Id, keyword.kw_Id);
+        }
+    }
+
+    // anything left in the keywordsUpdate array needs to be added
+    // to the DB
+    _saveKeywords(page, keywordsUpdate);
 }
 
 function createKeywordBlock(keyword, type) {
@@ -607,6 +666,7 @@ function deleteRecord(item, e) {
 
 // displays the form to edit a page/course
 function displayEditForm(item, e) {
+    console.log(item)
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         showHide(e.target.className);
         let type = e.target.className.replace(/edit-/, '');
@@ -624,17 +684,7 @@ function displayEditForm(item, e) {
         }
 
         if (type === 'page') {
-            let fullURI = baseURI + 'pageskeywords/keywords/' + item.pg_Id;
-            fetch(fullURI)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    data.forEach(item => {
-                        // send term to create kw block
-                        createKeywordBlock(item.kw_Word, 'edit');
-                    });
-                })
-                .catch(error => console.error('Unable to get keywords.', error));
+            getKeywordsInPage(item)
         }
         
     }
