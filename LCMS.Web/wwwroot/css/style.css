@@ -160,7 +160,7 @@ main button + button {
     flex-wrap: wrap;
     align-items: center;
     width: 99%;
-    margin: 0 0 8px;
+    margin: .75em 0 8px;
     padding: 4px 4px;
     cursor: text;
 }

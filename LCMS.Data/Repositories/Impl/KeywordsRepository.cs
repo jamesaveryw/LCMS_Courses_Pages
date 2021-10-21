@@ -31,13 +31,14 @@ namespace LCMS.Data.Repositories.Impl
 
         public Keyword GetKeyword(string kwWord)
         {
-            Keyword keywordToReturn = _context.Keywords.FirstOrDefault(kw => kw.Kw_Word == kwWord);
+            Keyword keywordToReturn = _context.Keywords.FirstOrDefault(kw => kw.Kw_Word.ToLower() == kwWord.ToLower());
 
             return keywordToReturn;
         }
 
         public Keyword CreateKeyword(Keyword createdKeyword)
         {
+            // only add new keyword if it doesn't already exist
             if (_context.Keywords.FirstOrDefault(kw => kw.Kw_Word.ToLower() == createdKeyword.Kw_Word.ToLower()) == null)
             {
                 _context.Keywords.Add(createdKeyword);
@@ -45,7 +46,8 @@ namespace LCMS.Data.Repositories.Impl
             }
             else
             {
-                Console.Write("keyword already exists");
+                // return keyword if it does already exist
+                createdKeyword = _context.Keywords.FirstOrDefault(kw => kw.Kw_Word.ToLower() == createdKeyword.Kw_Word.ToLower());
             }
 
             return createdKeyword;

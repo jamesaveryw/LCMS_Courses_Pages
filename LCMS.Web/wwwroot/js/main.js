@@ -372,7 +372,7 @@ function readJsonFile(form, e) {
 function _parseFileInfo(data) {
     let jsonObj = JSON.parse(cleanJSON(data.json));
     let snippetContent = jsonObj[0].JBuilder_Content;
-    let keywords = _findPageKeyTerms(json);
+    let keywords = _findPageKeyTerms(data.json);
     let pgTitle;
 
     for (let snippet of snippetContent) {
@@ -384,6 +384,7 @@ function _parseFileInfo(data) {
         }
     }
 
+    document.getElementById("upload-new-page").reset()
     autoFillCreatePage(pgTitle, keywords, jsonObj)
 }
 
@@ -400,9 +401,10 @@ function autoFillCreatePage(pgTitle, keywords, jsonObj) {
     kwDelBtn.append(delTxtNode);
     for (let keyword of keywords) {
         let kwCont = document.createElement('span');
-        let kwSpan = document.createElement('span');
-        let kwTextNode = document.createTextNode(keyword);
         kwCont.classList.add('tag');
+        let kwSpan = document.createElement('span');
+        kwSpan.classList.add('keyword');
+        let kwTextNode = document.createTextNode(keyword);
         let delBtn = kwDelBtn.cloneNode(true);
         kwSpan.appendChild(kwTextNode);
         kwCont.append(kwSpan, delBtn);
@@ -415,6 +417,11 @@ function createPage(e) {
     let fullURI = baseURI + 'pages';
     const addTitleTextbox = document.getElementById('page-title');
     const addJSONTextbox = document.getElementById('page-content');
+    const keywordSpans = slice(document.querySelectorAll('#page-keyword-list .keyword'));
+    let keywords = [];
+    for (let keywordSpan of keywordSpans) {
+        keywords.push(keywordSpan.innerHTML);
+    }
 
     const pageJSON = cleanJSON(addJSONTextbox.value.trim());
 
@@ -433,9 +440,12 @@ function createPage(e) {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(data => _saveKeywords(data))
+        .then(data => _saveKeywords(data, keywords))
         .then(() => listRecords('pages', 'list-pages', e))
-        .then(() => document.getElementById("new-page-form").reset())
+        .then(() => {
+            document.getElementById("new-page-form").reset();
+            document.getElementById("page-keyword-list").innerHTML = "";
+        })
         .catch(error => console.error('Unable to add item.', error));
 
 }
@@ -488,10 +498,8 @@ function createKeyword(keyword, pageId) {
 }
 
 // save keywords in newly added page
-function _saveKeywords(data) {
+function _saveKeywords(data, keywords) {
     let pageId = data.pg_Id;
-    let pageJSON = JSON.parse(data.pg_Content);
-    let keywords = pageJSON[0].Page_Setup.keywords;
 
     for (let keyword of keywords) {
         const item = {
