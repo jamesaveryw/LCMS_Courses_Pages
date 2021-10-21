@@ -149,7 +149,8 @@ main button + button {
     margin-right: 0;
 }
 
-#page-keyword-list {
+#page-keyword-list,
+#edit-page-keyword-list {
     box-shadow: 0 0 0 transparent;
     transition: box-shadow .1s linear;
     border-radius: 2px;
@@ -164,14 +165,16 @@ main button + button {
     padding: 4px 4px;
     cursor: text;
 }
-#page-keyword-list span.tag {
+#page-keyword-list span.tag,
+#edit-page-keyword-list span.tag {
     font-size: 13px;
     display: flex;
     margin: 2px 4px 2px 0;
     color: #1e1e1e;
     max-width: 100%;
 }
-#page-keyword-list button {
+#page-keyword-list button,
+#edit-page-keyword-list button {
     display: inline-block;
     border: 0;
     background-color: transparent;
@@ -188,7 +191,8 @@ main button + button {
     min-width: unset;
     transition: all .2s cubic-bezier(.4,1,.4,1);
 }
-#page-keyword-list span.tag span {
+#page-keyword-list span.tag span,
+#edit-page-keyword-list span.tag span {
     border-radius: 2px 0 0 2px;
     padding: 0 0 0 8px;
     white-space: nowrap;
@@ -201,7 +205,8 @@ main button + button {
     min-width: unset;
     transition: all .2s cubic-bezier(.4,1,.4,1);
 }
-#page-keyword-list input {
+#page-keyword-list input,
+#edit-page-keyword-list input {
     display: inline-block;
     flex: 1;
     font-size: 16px;

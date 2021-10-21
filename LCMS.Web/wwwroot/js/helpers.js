@@ -3,7 +3,12 @@
 // create array from from querySelector
 // Example: var arrayOfElements = slice(document.querySelectorAll('selector'));
 function slice(nodes) {
-    return Array.prototype.slice.call(nodes);
+    let array = []
+    if (nodes) {
+        array = Array.prototype.slice.call(nodes);
+    }
+
+    return array;
 }
 // set list of attributes on element
 // Example: setAttrs(element, {'attribute-name': 'value', 'attribute-name': 'value', 'attribute-name': 'value'});

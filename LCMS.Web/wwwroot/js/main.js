@@ -400,7 +400,7 @@ function autoFillCreatePage(pgTitle, keywords, jsonObj) {
 
     // autofill keywords from key terms in page
     for (let keyword of keywords) {
-        createKeywordBlock(keyword);
+        createKeywordBlock(keyword, 'new');
     }
 
     // set event listeners for keyword input
@@ -452,8 +452,8 @@ function updatePage(e) {
     const pageJSON = cleanJSON(document.getElementById('edit-page-content').value.trim());
     const keywordBlocks = slice(document.getElementById('#edit-page-keyword-list .keyword'));
     let keywords = [];
-    for (let keywordSpan of keywordSpans) {
-        keywords.push(keywordSpan.innerHTML);
+    for (let keywordBlock of keywordBlocks) {
+        keywords.push(keywordBlock.innerHTML);
     }
 
     const item = {
@@ -471,7 +471,7 @@ function updatePage(e) {
         body: JSON.stringify(item)
     })
         .then(response => response.json())
-        .then(data => _saveKeywords(data))
+        .then(data => _saveKeywords(data, keywords))
         .then(() => listRecords('pages', 'list-pages', e))
         .catch(error => console.error('Unable to update item.', error));
 
@@ -543,10 +543,11 @@ function _saveKeywordToPage(data, pageId) {
         .catch(error => console.error('Unable to add keyword to page.', error));
 }
 
-function createKeywordBlock(keyword) {
+function createKeywordBlock(keyword, type) {
     // tag container
-    let tagDiv = document.getElementById('page-keyword-list');
-    let input = document.getElementById('page-keyword-input');
+    let tagDiv = (type === 'new') ? document.getElementById('page-keyword-list') : document.getElementById('edit-page-keyword-list')
+    let input = (type === 'new') ? document.getElementById('page-keyword-input') : document.getElementById('edit-page-keyword-input');     
+
     // create block shell
     let kwBlock = document.createElement('span');
     kwBlock.classList.add('tag');
@@ -582,7 +583,9 @@ function addKeywordToList(e) {
         e.preventDefault();
         let input = e.target;
         let word = input.value.trim().replace(/,$/, '');
-        createKeywordBlock(word);
+        
+        let type = (/edit/.test(e.target.id)) ? 'edit' : 'new';
+        createKeywordBlock(word, type);
         input.value = '';
     }
 }
@@ -619,10 +622,21 @@ function displayEditForm(item, e) {
                 propEl.innerHTML = "<strong>ID:</strong> " + item[property];
             }
         }
-        let fullURI = baseURI + 'pageskeywords/' + item.pg_Id;
-        fetch(fullURI, {
 
-        })
+        if (type === 'page') {
+            let fullURI = baseURI + 'pageskeywords/keywords/' + item.pg_Id;
+            fetch(fullURI)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    data.forEach(item => {
+                        // send term to create kw block
+                        createKeywordBlock(item.kw_Word, 'edit');
+                    });
+                })
+                .catch(error => console.error('Unable to get keywords.', error));
+        }
+        
     }
 }
 
