@@ -79,18 +79,14 @@
                     <input type="text" id="page-title" placeholder="Page Title">
                     <label for="page-title">Tags</label>
                     <div id="page-keyword-list">
-                        <!--<input id="components-form-token-input-0" type="text" autocomplete="off" class="components-form-token-field__input" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-describedby="components-form-token-suggestions-howto-0" value="">-->
-                        <input type="text" id="page-keywords" placeholder="" aria-owns="suggestion-list" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-describedby="tag-box-help">
-                        <ul id="suggestion-list" role="listbox">
-
-                        </ul>
+                        <input type="text" id="page-keyword-input" placeholder="" aria-owns="suggestion-list" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-describedby="tag-box-help">
                     </div>
-                    <p id="tag-box-help">Initial list generated from the page's key terms. Seperate terms with a comma or press Enter.</p>
+                    <p id="tag-box-help">Seperate with a comma or Enter key.</p>
                     <label for="page-content">Page JSON</label>
                     <textarea rows="50" id="page-content" placeholder="Page JSON"></textarea>
                     <div class="btn-cont">
                         <button type="submit">Add Page</button>
-                        <button type="reset">Clear Form</button>
+                        <button type="reset" onclick="clearPageForm();" onkeydown="clearPageForm();">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -122,9 +118,10 @@
                         <label for="edit-page-title">Page Title</label>
                         <input type="text" id="edit-page-title">
                         <label for="page-title">Tags</label>
-                        <div id="page-keyword-list">
-                            <input type="text" id="page-keywords" placeholder="">
+                        <div id="edit-page-keyword-list">
+                            <input type="text" id="edit-page-keyword-input" placeholder="" aria-owns="suggestion-list" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-describedby="tag-box-help">
                         </div>
+                        <p id="tag-box-help">Seperate with a comma or Enter key.</p>
                         <label for="edit-page-content">Page JSON</label>
                         <textarea rows="50" id="edit-page-content"></textarea>
                         <div class="btn-cont">

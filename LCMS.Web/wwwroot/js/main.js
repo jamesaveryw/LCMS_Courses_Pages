@@ -10,7 +10,8 @@
     'LEFT': 37,
     'UP': 38,
     'RIGHT': 39,
-    'DOWN': 40
+    'DOWN': 40,
+    'COMMA': 188
 });
 
 const baseURI = 'api/';
@@ -370,6 +371,7 @@ function readJsonFile(form, e) {
 }
 
 function _parseFileInfo(data) {
+    console.log(cleanJSON(data.json));
     let jsonObj = JSON.parse(cleanJSON(data.json));
     let snippetContent = jsonObj[0].JBuilder_Content;
     let keywords = _findPageKeyTerms(data.json);
@@ -384,32 +386,26 @@ function _parseFileInfo(data) {
         }
     }
 
-    document.getElementById("upload-new-page").reset()
+    document.getElementById("upload-new-page").reset();
     autoFillCreatePage(pgTitle, keywords, jsonObj)
 }
 
 function autoFillCreatePage(pgTitle, keywords, jsonObj) {
+    // hide upload and show new page form
     document.getElementById('new-page-form').classList.remove('hidden');
     document.getElementById('upload-new-page').classList.add('hidden');
+    // autofill page form from data
     document.getElementById('page-title').value = pgTitle;
     document.getElementById('page-content').value = JSON.stringify(jsonObj);
 
-    let tagDiv = document.getElementById('page-keyword-list');
-    let kwDelBtn = document.createElement('button');
-    setAttrs(kwDelBtn, { 'type': 'button', 'aria-label': 'Remove tag' });
-    let delTxtNode = document.createTextNode('x');
-    kwDelBtn.append(delTxtNode);
+    // autofill keywords from key terms in page
     for (let keyword of keywords) {
-        let kwCont = document.createElement('span');
-        kwCont.classList.add('tag');
-        let kwSpan = document.createElement('span');
-        kwSpan.classList.add('keyword');
-        let kwTextNode = document.createTextNode(keyword);
-        let delBtn = kwDelBtn.cloneNode(true);
-        kwSpan.appendChild(kwTextNode);
-        kwCont.append(kwSpan, delBtn);
-        tagDiv.prepend(kwCont);
+        createKeywordBlock(keyword);
     }
+
+    // set event listeners for keyword input
+    let keywordInput = document.getElementById('page-keyword-input');
+    keywordInput.addEventListener('keydown', addKeywordToList);
 }
 
 // create new page
@@ -441,12 +437,11 @@ function createPage(e) {
     })
         .then(response => response.json())
         .then(data => _saveKeywords(data, keywords))
-        .then(() => listRecords('pages', 'list-pages', e))
         .then(() => {
-            document.getElementById("new-page-form").reset();
-            document.getElementById("page-keyword-list").innerHTML = "";
+            listRecords('pages', 'list-pages', e);
+            clearPageForm();
         })
-        .catch(error => console.error('Unable to add item.', error));
+        .catch(error => console.error('Unable to add page.', error));
 
 }
 
@@ -454,8 +449,12 @@ function createPage(e) {
 function updatePage(e) {
     let fullURI = baseURI + 'pages';
     const itemId = parseInt(document.getElementById('edit-page-id').innerText.replace(/ID: /, ''));
-    console.log(itemId);
     const pageJSON = cleanJSON(document.getElementById('edit-page-content').value.trim());
+    const keywordBlocks = slice(document.getElementById('#edit-page-keyword-list .keyword'));
+    let keywords = [];
+    for (let keywordSpan of keywordSpans) {
+        keywords.push(keywordSpan.innerHTML);
+    }
 
     const item = {
         Pg_Id: itemId,
@@ -477,6 +476,19 @@ function updatePage(e) {
         .catch(error => console.error('Unable to update item.', error));
 
     return false;
+}
+
+function clearPageForm(e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        document.getElementById("new-page-form").reset();
+        let keywordBlocks = slice(document.querySelectorAll("#page-keyword-list .tag"));
+        for (let keywordBlock of keywordBlocks) {
+            keywordBlock.remove();
+        }
+    }
+    // hide upload and show new page form
+    document.getElementById('new-page-form').classList.add('hidden');
+    document.getElementById('upload-new-page').classList.remove('hidden');
 }
 
 
@@ -511,6 +523,7 @@ function _saveKeywords(data, keywords) {
     }
 }
 
+// save keywords to pagekeyword table
 function _saveKeywordToPage(data, pageId) {
     let fullURI = baseURI + "pageskeywords";
 
@@ -528,6 +541,50 @@ function _saveKeywordToPage(data, pageId) {
         body: JSON.stringify(item)
     })
         .catch(error => console.error('Unable to add keyword to page.', error));
+}
+
+function createKeywordBlock(keyword) {
+    // tag container
+    let tagDiv = document.getElementById('page-keyword-list');
+    let input = document.getElementById('page-keyword-input');
+    // create block shell
+    let kwBlock = document.createElement('span');
+    kwBlock.classList.add('tag');
+    // span with keyword in it
+    let kwSpan = document.createElement('span');
+    kwSpan.classList.add('keyword');
+    let kwTextNode = document.createTextNode(keyword);
+    // delete button
+    let kwDelBtn = document.createElement('button');
+    setAttrs(kwDelBtn, { 'type': 'button', 'aria-label': 'Remove tag' });
+    let delTxtNode = document.createTextNode('x');
+    kwDelBtn.addEventListener('click', removeKeywordBlock);
+    kwDelBtn.addEventListener('keydown', removeKeywordBlock);
+
+    // append everything
+    kwDelBtn.append(delTxtNode);
+    kwSpan.appendChild(kwTextNode);
+    kwBlock.append(kwSpan, kwDelBtn);
+
+    // insert into container
+    tagDiv.insertBefore(kwBlock, input);
+}
+
+function removeKeywordBlock(e) {
+    if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
+        e.target.parentNode.remove();
+    }
+}
+
+// add keyword to keyword container on add page form
+function addKeywordToList(e) {
+    if (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.COMMA)) {
+        e.preventDefault();
+        let input = e.target;
+        let word = input.value.trim().replace(/,$/, '');
+        createKeywordBlock(word);
+        input.value = '';
+    }
 }
 
 // Record Functions
@@ -550,7 +607,6 @@ function displayEditForm(item, e) {
     if (!e || e.type === 'click' || (e.type === 'keydown' && (e.which === keyCodes.RETURN || e.which === keyCodes.SPACE))) {
         showHide(e.target.className);
         let type = e.target.className.replace(/edit-/, '');
-        console.log(type);
         let properties = Object.keys(item);
 
         for (let property of properties) {
@@ -563,6 +619,10 @@ function displayEditForm(item, e) {
                 propEl.innerHTML = "<strong>ID:</strong> " + item[property];
             }
         }
+        let fullURI = baseURI + 'pageskeywords/' + item.pg_Id;
+        fetch(fullURI, {
+
+        })
     }
 }
 
@@ -598,8 +658,6 @@ function listRecords(type, contID, e) {
         else if (/add-page-modal/.test(contID)) {
             fullURI = baseURI + 'coursespages/' + type + '/-' + e.target.getAttribute('data-course-id');
         }
-
-        console.log(fullURI);
 
         fetch(fullURI)
             .then(response => response.json())
@@ -779,6 +837,7 @@ function cleanJSON(json) {
     json = json.replace(/,\s*(\}|\])/g, '$1'); // remove trailing commas
     json = json.replace(/^Lesson_Data_File\(/, ""); // remove function call
     json = json.replace(/\)\s*;\s*$/, ""); // remove functin call close paren and semicolon
+    json = json.replace(/\t/g, "    "); // JSON.parse doesn't like tabs in the content
     json = json.replace(/(?<!")question_answers\s*:/g, '"question_answers":'); // question_answers never has quotes around it
     json = json.replace(/(?<!")Video_Files_New\s*:/g, '"Video_Files_New":'); // question_answers never has quotes around it
 
