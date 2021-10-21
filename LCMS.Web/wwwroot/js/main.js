@@ -372,7 +372,7 @@ function readJsonFile(form, e) {
 function _parseFileInfo(data) {
     let jsonObj = JSON.parse(cleanJSON(data.json));
     let snippetContent = jsonObj[0].JBuilder_Content;
-    let keywords = jsonObj[0].Page_Setup.keywords;
+    let keywords = _findPageKeyTerms(json);
     let pgTitle;
 
     for (let snippet of snippetContent) {
@@ -774,8 +774,6 @@ function cleanJSON(json) {
     json = json.replace(/(?<!")question_answers\s*:/g, '"question_answers":'); // question_answers never has quotes around it
     json = json.replace(/(?<!")Video_Files_New\s*:/g, '"Video_Files_New":'); // question_answers never has quotes around it
 
-    let pageKeyTerms = _findPageKeyTerms(json);
-    json = _addTermsToPgSetup(json, pageKeyTerms);
 
     return json;
 }
@@ -789,7 +787,7 @@ function _findPageKeyTerms(pgJson) {
     return ktMatches.map(m => m[1]);
 }
 
-function _addTermsToPgSetup(json, terms) {
+/*function _addTermsToPgSetup(json, terms) {
     let jsonObj = JSON.parse(json);
     let jsonTerms = [];
 
@@ -809,4 +807,4 @@ function _addTermsToPgSetup(json, terms) {
     }
 
     return JSON.stringify(jsonObj);
-}
+}*/
