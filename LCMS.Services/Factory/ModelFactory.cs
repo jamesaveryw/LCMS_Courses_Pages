@@ -90,7 +90,8 @@ namespace LCMS.Services.Factory
                 pg_title: pagesInCourseToCreate.Pg_Title,
                 pg_content: pagesInCourseToCreate.Pg_Content,
                 pg_html: pagesInCourseToCreate.Pg_HTML,
-                cp_order: pagesInCourseToCreate.CP_Order
+                cp_order: pagesInCourseToCreate.CP_Order,
+                pg_keywords: pagesInCourseToCreate.Pg_Keywords
             );
         }
 
@@ -102,7 +103,8 @@ namespace LCMS.Services.Factory
                 Pg_Title = pagesInCourseToView.Pg_Title,
                 Pg_Content = pagesInCourseToView.Pg_Content,
                 Pg_HTML = pagesInCourseToView.Pg_HTML,
-                CP_Order = pagesInCourseToView.CP_Order
+                CP_Order = pagesInCourseToView.CP_Order,
+                Pg_Keywords = pagesInCourseToView.Pg_Keywords
             };
         }
 

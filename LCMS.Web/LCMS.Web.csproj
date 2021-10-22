@@ -41,7 +41,6 @@
     <Folder Include="CourseTemplate\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\JBPageLaunch\" />
-    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
 

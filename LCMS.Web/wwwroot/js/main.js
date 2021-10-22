@@ -316,20 +316,22 @@ function deletePgFromCrs(e) {
     crsPgToDelete.push(deleteObj);
 }
 
-function getPagesInCoursePackage(course) {
+async function getPagesInCoursePackage(course) {
     let updatedData;
     fullURI = baseURI + 'coursespages/pages/' + course.crs_Id;
-    fetch(fullURI)
-        .then(response => response.json())
+    let response = await fetch(fullURI);
+    let pagesInCourse = await response.json();
+    updatedData = _updateDataForPackage(data);
+    _packageCourse(updatedData, course);
+        /*.then(response => response.json())
         .then(data => {
-            updatedData = _getPageHTML(data);
-            console.log(updatedData);
+            updatedData = _updateDataForPackage(data);
             _packageCourse(updatedData, course);
         })
-        .catch(error => console.error('Unable to get items.', error));
+        .catch(error => console.error('Unable to get items.', error));*/
 }
 
-function _getPageHTML(data) {
+function _updateDataForPackage(data) {
     data.forEach(item => {
         let pgJSON = item.pg_Content;
         let pgJSONObj = JSON.parse(pgJSON);

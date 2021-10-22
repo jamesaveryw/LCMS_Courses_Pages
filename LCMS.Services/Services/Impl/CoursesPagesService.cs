@@ -14,14 +14,20 @@ namespace LCMS.Services.Services.Impl
         private readonly ICoursesPagesRepository _coursesPagesRepo;
         private readonly IPagesRepository _pagesRepo;
         private readonly ICoursesRepository _coursesRepo;
+        private readonly IKeywordsRepository _keywordsRepo;
+        private readonly IPagesKeywordsRepository _pagesKeywordsRepo;
 
         public CoursesPagesService(ICoursesPagesRepository coursesPagesRepo, 
             IPagesRepository pagesRepo,
-            ICoursesRepository coursesRepo)
+            ICoursesRepository coursesRepo,
+            IKeywordsRepository keywordsRepo,
+            IPagesKeywordsRepository pagesKeywordsRepo)
         {
             _coursesPagesRepo = coursesPagesRepo;
             _pagesRepo = pagesRepo;
             _coursesRepo = coursesRepo;
+            _keywordsRepo = keywordsRepo;
+            _pagesKeywordsRepo = pagesKeywordsRepo;
         }
 
         public IEnumerable<PageViewModel> GetPagesNotInCourse(int courseId)
@@ -67,12 +73,22 @@ namespace LCMS.Services.Services.Impl
             foreach (var page in pagesInCourse)
             {
                 CoursePage coursepage = coursePagesReturned.FirstOrDefault(cp => cp.Pg_Id == page.Pg_Id);
+                IEnumerable<PageKeyword> keywordsInPage = _pagesKeywordsRepo.GetPageKeywords(page.Pg_Id);
+                string[] keywords = (keywordsInPage.Count() > 0) ? new string[keywordsInPage.Count()] : null;
+                int j = 0;
+                foreach (var keyword in keywordsInPage)
+                {
+                    Keyword currentKeyword = _keywordsRepo.GetKeyword(keyword.Kw_Id);
+                    keywords[j] = currentKeyword.Kw_Word;
+                    j++;
+                }
                 PagesInCourse pageInCourse = new PagesInCourse
                 {
                     Pg_Id = page.Pg_Id,
                     Pg_Title = page.Pg_Title,
                     Pg_Content = page.Pg_Content,
-                    CP_Order = coursepage.CP_Order
+                    CP_Order = coursepage.CP_Order,
+                    Pg_Keywords = keywords
                 };
                 pageViewInCourse[i] = ModelFactory.CreateViewModel(pageInCourse);
                 i++;

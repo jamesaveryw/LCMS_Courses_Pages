@@ -9326,6 +9326,7 @@ jQuery(function ($) {
 				Jcc_Comp_Maker = Jcc_Comp_Maker + "</div>";
 
 
+				return Jcc_Comp_Maker;
 				Component_Engine(Jcc_Comp_Maker);
 
 				//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
