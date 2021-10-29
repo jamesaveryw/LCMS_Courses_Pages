@@ -78,13 +78,13 @@ namespace LCMS.Packager
             }
         }
 
-        /*public void CreateJSONFiles()
+        public void CreateJSONFiles()
         {
             // get all pages in the course
             IEnumerable<PagesInCourse> pages = this.Crs_pgs;
             // save the course number for directory structure
             string courseNum = this.Crs.Crs_Number;
-            string jsonDir = Directory.GetCurrentDirectory() + "\\CrsExport\\" + this.Crs.Crs_Number + "\\Modules\\Mod_01\\json";
+            string jsonDir = Directory.GetCurrentDirectory() + "\\temp\\" + this.Crs.Crs_Number;
 
             // loop through all pages and create a json file for each
             int i = 0;
@@ -97,7 +97,7 @@ namespace LCMS.Packager
                 sw.WriteLine(json); 
                 sw.Close();
             }
-        }*/
+        }
 
         public void CreateSCOFiles()
         {
@@ -174,6 +174,21 @@ namespace LCMS.Packager
                     xw.WriteStartElement("dependency");
                     xw.WriteAttributeString("identifierref", "common_files");
                     xw.WriteEndElement();
+                    // keywords
+                    if (page.Pg_Keywords != null)
+                    {
+                        foreach (string keyword in page.Pg_Keywords)
+                        {
+                            // keyword
+                            xw.WriteStartElement("keyword");
+                            // langstring
+                            xw.WriteStartElement("langstring");
+                            xw.WriteAttributeString("xml", "lang", null, "en");
+                            xw.WriteString(keyword);
+                            xw.WriteEndElement();
+                            xw.WriteEndElement();
+                        }
+                    }
                     xw.WriteEndElement();
                     i++;
                 }

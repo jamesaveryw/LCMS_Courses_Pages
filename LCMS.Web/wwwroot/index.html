@@ -119,7 +119,7 @@
                         <input type="text" id="edit-page-title">
                         <label for="page-title">Tags</label>
                         <div id="edit-page-keyword-list">
-                            <input type="text" id="edit-page-keyword-input" placeholder="" aria-owns="suggestion-list" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-describedby="tag-box-help">
+                            <input type="text" id="edit-page-keyword-input" placeholder="" aria-owns="suggestion-list" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-describedby="tag-box-help" onkeydown="addKeywordToList(event);">
                         </div>
                         <p id="tag-box-help">Seperate with a comma or Enter key.</p>
                         <label for="edit-page-content">Page JSON</label>

@@ -50,8 +50,8 @@ namespace LCMS.Web.Controllers
             crsPkg.CloneTemplate();
             crsPkg.CreateHTMLFiles();
             crsPkg.CreateSCOFiles();
+            crsPkg.CreateJSONFiles();
             crsPkg.ZipPackage();
-            //crsPkg.CreateJSONFiles();
             //crsPkg.UpdateSetupFile();
 
             return Ok(pagesInCourse);

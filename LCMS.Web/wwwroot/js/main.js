@@ -37,6 +37,7 @@ function showHide(activeElId) {
     document.querySelector('.active').classList.remove('active');
     activeEl.classList.remove('hidden');
     activeEl.classList.add('active');
+
 }
 
 // closes any modal/modal container with class open
@@ -321,7 +322,7 @@ async function getPagesInCoursePackage(course) {
     fullURI = baseURI + 'coursespages/pages/' + course.crs_Id;
     let response = await fetch(fullURI);
     let pagesInCourse = await response.json();
-    updatedData = _updateDataForPackage(data);
+    updatedData = _updateDataForPackage(pagesInCourse);
     _packageCourse(updatedData, course);
         /*.then(response => response.json())
         .then(data => {
@@ -688,7 +689,7 @@ function displayEditForm(item, e) {
         if (type === 'page') {
             getKeywordsInPage(item)
         }
-        
+
     }
 }
 
